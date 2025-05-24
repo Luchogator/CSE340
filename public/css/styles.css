@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* ===== VARIABLES ===== */
 :root {
     --primary-color: #0066cc;
@@ -1082,4 +1083,11 @@ main.container {
     .site-footer .footer-logo {
         padding-left: 0;
     }
+=======
+/******* Change Box Model ***************/
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+>>>>>>> 8ef5dd67054daeab6107ab389884766c28cbe41a
 }
