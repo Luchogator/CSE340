@@ -1,48 +1,42 @@
-# Registro de Cambios - CSE Motors
+# Changelog - CSE Motors
 
 ## [2.0.0] - 2025-05-22
 
-### Mejoras Principales
+### Main Improvements
 
-#### Rendimiento
-- Implementado Service Worker avanzado con estrategias de caché personalizables
-- Añadido precaching de recursos estáticos para carga más rápida
-- Optimización de imágenes y recursos estáticos
-- Mejora en los tiempos de carga mediante caché HTTP
+#### Performance
+- Implemented advanced Service Worker with customizable cache strategies
+- Added prefetching of static resources for faster load
+- Optimized images and static resources
+- Improved load times via HTTP cache
 
-#### Experiencia de Usuario
-- Página de error 404 personalizada con diseño atractivo
-- Página de "sin conexión" para mejorar la experiencia offline
-- Navegación más fluida con transiciones suaves
-- Mejoras en la accesibilidad del teclado
+#### User Experience
+- Custom 404 error page with attractive design
+- Offline page to improve offline experience
+- Smoother navigation with soft transitions
+- Improved keyboard accessibility
 
-#### Nuevas Características
-- Soporte para instalación como aplicación (PWA)
-- Notificaciones push (configuración básica)
-- Sincronización en segundo plano
-- Soporte offline completo
+#### New Features
+- Support for installation as a PWA
+- Push notifications (basic configuration)
+- Basic sync in background
+- Full offline support
 
-#### Seguridad
-- Headers de seguridad mejorados
-- Políticas de CSP (Content Security Policy)
-- Protección contra XSS y otros ataques comunes
+#### Security
+- Improved security headers
+- CSP (Content Security Policy) policies
+- Protection against XSS and common attacks
 
 #### SEO
-- Sitemap.xml generado automáticamente
-- Archivo robots.txt configurado
-- Metaetiquetas optimizadas
-- Estructura de datos estructurados (Schema.org)
+- Auto-generated sitemap.xml
+- robots.txt configuration
+- Optimized meta tags
+- Structured data (Schema.org)
 
-#### Desarrollo
-- Configuración modular del Service Worker
-- Mejor manejo de errores
-- Código más mantenible y documentado
-- Variables de entorno para configuración
-
-### Correcciones de Errores
-- Corregido el problema de recarga de estilos
-- Mejorado el manejo de rutas no encontradas
-- Corregidos problemas de caché en actualizaciones
+### Development
+- Code refactoring
+- Improved comments and documentation
+- Updated dependencies
 
 ## [1.0.0] - 2025-05-21
 
