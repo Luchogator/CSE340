@@ -1,0 +1,49 @@
+<nav aria-label="Main navigation">
+    <ul role="menubar">
+        <li role="none">
+            <a href="/" 
+               class="<%= (title === 'Home') ? 'active' : '' %>" 
+               role="menuitem" 
+               tabindex="0"
+               <%= (title === 'Home') ? 'aria-current="page"' : '' %>>
+                Home
+            </a>
+        </li>
+        <li role="none">
+            <a href="/vehicles" 
+               class="<%= (title === 'Vehicles') ? 'active' : '' %>" 
+               role="menuitem" 
+               tabindex="0"
+               <%= (title === 'Vehicles') ? 'aria-current="page"' : '' %>>
+                Vehicles
+            </a>
+        </li>
+        <li role="none">
+            <a href="/services" 
+               class="<%= (title === 'Services') ? 'active' : '' %>" 
+               role="menuitem" 
+               tabindex="0"
+               <%= (title === 'Services') ? 'aria-current="page"' : '' %>>
+                Services
+            </a>
+        </li>
+        <li role="none">
+            <a href="/about" 
+               class="<%= (title === 'About') ? 'active' : '' %>" 
+               role="menuitem" 
+               tabindex="0"
+               <%= (title === 'About') ? 'aria-current="page"' : '' %>>
+                About
+            </a>
+        </li>
+        <li role="none">
+            <a href="/contact" 
+               class="<%= (title === 'Contact') ? 'active' : '' %>" 
+               role="menuitem" 
+               tabindex="0"
+               <%= (title === 'Contact') ? 'aria-current="page"' : '' %>>
+                Contact
+            </a>
+        </li>
+    </ul>
+</nav>

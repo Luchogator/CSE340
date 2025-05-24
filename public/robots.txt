@@ -1,0 +1,51 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://cse-motors.onrender.com/sitemap.xml
+
+# Crawl-delay: 10
+
+# Disallow crawling of admin and login pages
+Disallow: /admin/
+Disallow: /login/
+Disallow: /private/
+
+# Allow all other pages
+Allow: /*
+
+# Block specific files
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /*.sql$
+
+# Block specific directories
+Disallow: /api/
+Disallow: /config/
+Disallow: /node_modules/
+
+# Block common CMS and framework files
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /wp-json/
+Disallow: /wp-content/plugins/
+Disallow: /wp-content/themes/
+
+# Block search pages and query parameters
+Disallow: /*?s=
+Disallow: /*?q=
+Disallow: /*?search=
+
+# Block AJAX requests
+Disallow: /*?wc-ajax=
+
+# Block WordPress feeds
+Disallow: /*/feed/
+Disallow: /*/feed/rss/
+
+# Block WordPress embeds
+Disallow: /*/embed/
+
+# Block WordPress trackbacks
+Disallow: /*/trackback/

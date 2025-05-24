@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/_head') %>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <%- include('partials/_header') %>
+    <%- include('partials/_nav') %>
+
+    <main id="main-content" class="container" tabindex="-1">
+        <h2>Welcome to CSE Motors!</h2>
+        
+        <section class="featured">
+            <div class="featured-image">
+                <img src="/images/vehicles/delorean-tn.jpg" alt="DMC Delorean">
+                <span class="featured-badge">Featured</span>
+            </div>
+            <div class="featured-content">
+                <h3>DMC Delorean</h3>
+                <ul>
+                    <li>3 Cup holders</li>
+                    <li>Superman doors</li>
+                    <li>Fuzzy dice!</li>
+                </ul>
+                <a href="#" class="cta-button">Own Today</a>
+            </div>
+        </section>
+
+        <div class="content-grid">
+            <section class="upgrades">
+                <h2>DMC Upgrades</h2>
+                <div class="upgrade-grid">
+                    <article class="upgrade-card">
+                        <div class="upgrade-image">
+                            <img src="/images/upgrades/flux-cap.png" alt="Flux Capacitor">
+                        </div>
+                        <div class="upgrade-content">
+                            <h3>Flux Capacitor</h3>
+                            <p>You've got a nuclear reactor in your car. But let's make sure you know when you're going.</p>
+                            <a href="#" class="upgrade-button">Add to Cart</a>
+                        </div>
+                    </article>
+                    
+                    <article class="upgrade-card">
+                        <div class="upgrade-image">
+                            <img src="/images/upgrades/flame.jpg" alt="Flame Decals">
+                        </div>
+                        <div class="upgrade-content">
+                            <h3>Flame Decals</h3>
+                            <p>Make your DeLorean look fast even when it's standing still with these awesome flame decals!</p>
+                            <a href="#" class="upgrade-button">Add to Cart</a>
+                        </div>
+                    </article>
+                    
+                    <article class="upgrade-card">
+                        <div class="upgrade-image">
+                            <img src="/images/upgrades/bumper_sticker.jpg" alt="Bumper Sticker">
+                        </div>
+                        <div class="upgrade-content">
+                            <h3>Bumper Stickers</h3>
+                            <p>Who doesn't love a good bumper sticker? Show your support for your favorite team, band, or political candidate!</p>
+                            <a href="#" class="upgrade-button">Add to Cart</a>
+                        </div>
+                    </article>
+                    
+                    <article class="upgrade-card">
+                        <div class="upgrade-image">
+                            <img src="/images/upgrades/hub-cap.jpg" alt="Hub Caps">
+                        </div>
+                        <div class="upgrade-content">
+                            <h3>Custom Hub Caps</h3>
+                            <p>Make your car stand out from the crowd with these custom hub caps. Available in a variety of colors and styles.</p>
+                            <a href="#" class="upgrade-button">Add to Cart</a>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="reviews">
+                <h3>DMC Delorean Reviews</h3>
+                <ul>
+                    <li>"So fast it's almost like traveling in time." (4/5)</li>
+                    <li>"Coolest ride on the road." (4/5)</li>
+                    <li>"I'm feeling McFly!" (5/5)</li>
+                    <li>"The most futuristic ride of 1985." (4.5/5)</li>
+                    <li>"80's livin and I love it!" (5/5)</li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <%- include('partials/_footer') %>
+    
+    <!-- Back to Top Button -->
+    <a href="#top" class="back-to-top" id="backToTop" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <!-- Font Awesome for Icons -->
+    <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
+    
+    <!-- Back to Top Script -->
+    <script>
+        // Show/hide back to top button on scroll
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+    </script>
+</body>
+</html>
