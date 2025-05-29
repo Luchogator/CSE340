@@ -1,77 +1,77 @@
 /**
- * Configuración del Service Worker para CSE Motors
- * Este archivo contiene la configuración y las constantes utilizadas por el Service Worker
+ * Service Worker Configuration for CSE Motors
+ * This file contains the configuration and constants used by the Service Worker
  * 
- * Este archivo sigue el patrón de configuración centralizada para facilitar el mantenimiento
- * y la actualización del comportamiento del Service Worker.
+ * This file follows a centralized configuration pattern to facilitate maintenance
+ * and updating the Service Worker's behavior.
  */
 
 
 // ============================================
-// Configuración General
+// General Configuration
 // ============================================
 
 
-// Versión de la caché - Incrementar este número cada vez que se actualicen los recursos
+// Cache Version - Increment this number whenever resources are updated
 const CACHE_VERSION = 'v2.0.0';
 
-// Prefijo para el nombre de la caché
+// Prefix for the cache name
 const CACHE_PREFIX = 'cse-motors';
 
-// Nombre completo de la caché
+// Full cache name
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
-// Tiempo máximo de vida en caché (en segundos)
+// Maximum time in cache (in seconds)
 const MAX_AGE = {
-  CSS: 60 * 60 * 24 * 7,       // 1 semana
-  JS: 60 * 60 * 24 * 7,        // 1 semana
-  IMG: 60 * 60 * 24 * 30,      // 1 mes
-  FONT: 60 * 60 * 24 * 30,     // 1 mes
-  HTML: 60 * 60 * 24,          // 1 día
-  API: 60 * 5,                 // 5 minutos
-  OTHER: 60 * 60 * 24,         // 1 día
-  MANIFEST: 60 * 60 * 24 * 7   // 1 semana para el manifest
+  CSS: 60 * 60 * 24 * 7,       // 1 week
+  JS: 60 * 60 * 24 * 7,        // 1 week
+  IMG: 60 * 60 * 24 * 30,      // 1 month
+  FONT: 60 * 60 * 24 * 30,     // 1 month
+  HTML: 60 * 60 * 24,          // 1 day
+  API: 60 * 5,                 // 5 minutes
+  OTHER: 60 * 60 * 24,         // 1 day
+  MANIFEST: 60 * 60 * 24 * 7   // 1 week for the manifest
 };
 
-// Tiempo de espera para las solicitudes de red (en segundos)
+// Network request timeout (in seconds)
 const NETWORK_TIMEOUT = 5;
 
-// Tamaño máximo de la caché (en MB)
+// Maximum cache size (in MB)
 const MAX_CACHE_SIZE = 50;
 
 // ============================================
-// Estrategias de Caché
+// Cache Strategies
 // ============================================
 
 
 /**
- * Estrategias de caché disponibles
- * Define el comportamiento de almacenamiento en caché para diferentes tipos de recursos
+ * Available Cache Strategies
+ * Defines the caching behavior for different types of resources
  */
 const CACHE_STRATEGIES = Object.freeze({
-  CACHE_FIRST: 'cache-first',            // Sirve de la caché primero, si no está, va a la red
-  NETWORK_FIRST: 'network-first',        // Intenta obtener de la red primero, si falla usa caché
-  STALE_WHILE_REVALIDATE: 'stale-while-revalidate', // Sirve de caché y actualiza en segundo plano
-  NETWORK_ONLY: 'network-only',          // Solo red, sin caché
-  CACHE_ONLY: 'cache-only'               // Solo caché, sin red
+  CACHE_FIRST: 'cache-first',            // Serve from cache first, fallback to network if not available
+  NETWORK_FIRST: 'network-first',        // Attempt to fetch from network first, fallback to cache if fails
+  STALE_WHILE_REVALIDATE: 'stale-while-revalidate', // Serve from cache and update in the background
+  NETWORK_ONLY: 'network-only',          // Network only, no cache
+  CACHE_ONLY: 'cache-only'               // Cache only, no network
 });
 
 // ============================================
-// Configuración de Notificaciones Push
+// Push Notification Configuration
 // ============================================
 
 
 /**
- * Configuración para notificaciones push
+ * Configuration for push notifications
  */
 const NOTIFICATION_CONFIG = {
-  // Tiempo de visualización de notificaciones (en segundos)
+  // Notification display time (in seconds)
   DISPLAY_TIME: 10,
-  
-  // URL de la imagen por defecto para notificaciones
+
+  // Default image URL for notifications
   DEFAULT_ICON: '/images/notification-icon.png',
-  
-  // Colores de la aplicación para notificaciones
+
+  // App colors for notifications
   COLORS: {
     PRIMARY: '#1976d2',
     SECONDARY: '#f50057',
@@ -79,102 +79,72 @@ const NOTIFICATION_CONFIG = {
     TEXT: '#212121',
     ACCENT: '#ff4081'
   },
-  
-  // Configuración de acciones
+
+  // Action configuration
   ACTIONS: [
-    { action: 'view', title: 'Ver' },
-    { action: 'dismiss', title: 'Descartar' }
+    { action: 'view', title: 'View' },
+    { action: 'dismiss', title: 'Dismiss' }
   ],
-  
-  // Configuración de vibración
+
+  // Vibration pattern
   VIBRATION_PATTERN: [200, 100, 200, 100, 200, 100, 400]
 };
 
 // ============================================
-// Recursos para Precaching
+// Resources for Precaching
 // ============================================
 
 
 /**
- * Lista de recursos para precaching durante la instalación
- * Estos recursos se almacenarán en caché inmediatamente después de la instalación
+ * List of resources for precaching during installation
+ * These resources will be cached immediately after installation
  */
 const PRECACHE_ASSETS = [
-  // Páginas HTML
+  // HTML Pages
   '/',
-  '/offline.html',
   '/404.html',
-  
-  // Hojas de estilo
-  '/css/styles.css',
-  '/css/error-pages.css',
-  
-  // Scripts
-  '/js/keyboard-navigation.js',
+
+  // Service Worker core files
   '/js/register-sw.js',
-  '/js/sw-config.js',
-  
-  // Imágenes
-  '/images/logo.png',
-  '/images/logo-192x192.png',
-  '/images/logo-512x512.png',
-  '/images/delorean.jpg',
-  '/images/upgrades/flux-cap.png',
-  '/images/upgrades/bumper-sticker.jpg',
-  '/images/upgrades/hub-cap.jpg',
-  
-  // Fuentes
-  'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap',
-  
-  // Favicons y recursos PWA
-  '/favicon.ico',
-  '/favicon-16x16.png',
-  '/favicon-32x32.png',
-  '/apple-touch-icon.png',
-  '/safari-pinned-tab.svg',
-  '/site.webmanifest',
-  
-  // SEO
-  '/sitemap.xml',
-  '/robots.txt'
+  '/js/sw-config.js'
 ];
 
 // ============================================
-// Exclusiones de Caché
+// Cache Exclusions
 // ============================================
 
 
 /**
- * Patrones de URL que nunca deben almacenarse en caché
- * Se utilizan expresiones regulares para hacer coincidir patrones de URL
+ * URL patterns that should never be cached
+ * Regular expressions are used to match URL patterns
  */
 const NO_CACHE_PATTERNS = [
-  /\/api\//,                  // Rutas de API
-  /\/auth\//,                // Rutas de autenticación
-  /\/admin\//,               // Panel de administración
-  /\/private\//,             // Rutas privadas
-  /\/wp-json\//,             // API de WordPress
+  /\/api\//,                  // API routes
+  /\/auth\//,                // Authentication routes
+  /\/admin\//,               // Admin panel
+  /\/private\//,             // Private routes
+  /\/wp-json\//,             // WordPress API
   /\/graphql/,               // GraphQL endpoints
   /\/socket\.io\//,          // WebSockets
   /\/sockjs-node\//,         // Webpack Dev Server
   /\/__webpack_hmr/,         // Webpack Hot Module Replacement
   /\/browser-sync\//,        // BrowserSync
-  /\.(?:json|xml|csv)$/i,    // Archivos de datos
-  /\/service-worker\.js/     // El propio service worker
+  /\.(?:json|xml|csv)$/i,    // Data files
+  /\/service-worker\.js/     // The service worker itself
 ];
 
 // ============================================
-// Estrategias por Ruta
+// Route Strategies
 // ============================================
 
 
 /**
- * Configuración de estrategias de caché por ruta
- * Permite personalizar el comportamiento de almacenamiento en caché
- * para diferentes rutas o patrones de URL
+ * Cache strategy configuration per route
+ * Allows customizing caching behavior
+ * for different routes or URL patterns
  */
 const ROUTE_STRATEGIES = Object.freeze([
-  // Páginas principales - Stale While Revalidate para contenido dinámico
+  // Main pages - Stale While Revalidate for dynamic content
   {
     pattern: /^\/(|about|contact|vehicles|upgrades)$/,
     strategy: CACHE_STRATEGIES.STALE_WHILE_REVALIDATE,
@@ -182,116 +152,116 @@ const ROUTE_STRATEGIES = Object.freeze([
       cacheName: `${CACHE_NAME}-pages`,
       networkTimeoutSeconds: NETWORK_TIMEOUT,
       plugins: [
-        { 
-          expiration: { 
-            maxEntries: 20, 
+        {
+          expiration: {
+            maxEntries: 20,
             maxAgeSeconds: MAX_AGE.HTML,
             purgeOnQuotaError: true
-          } 
+          }
         },
-        { 
-          cacheableResponse: { 
+        {
+          cacheableResponse: {
             statuses: [0, 200],
-            headers: { 'Content-Type': [ 'text/html', 'text/plain' ] }
-          } 
+            headers: { 'Content-Type': ['text/html', 'text/plain'] }
+          }
         }
       ]
     }
   },
-  
-  // Archivos CSS - Cache First con validación
+
+  // CSS Files - Cache First with validation
   {
     pattern: /\.css(?:\?.*)?$/i,
     strategy: CACHE_STRATEGIES.CACHE_FIRST,
     options: {
       cacheName: `${CACHE_NAME}-styles`,
       plugins: [
-        { 
-          expiration: { 
-            maxEntries: 30, 
+        {
+          expiration: {
+            maxEntries: 30,
             maxAgeSeconds: MAX_AGE.CSS,
             purgeOnQuotaError: true
-          } 
+          }
         },
-        { 
-          cacheableResponse: { 
+        {
+          cacheableResponse: {
             statuses: [0, 200]
-          } 
+          }
         }
       ]
     }
   },
-  
-  // Scripts JS - Cache First con validación
+
+  // JS Scripts - Cache First with validation
   {
     pattern: /\.js(?:\?.*)?$/i,
     strategy: CACHE_STRATEGIES.CACHE_FIRST,
     options: {
       cacheName: `${CACHE_NAME}-scripts`,
       plugins: [
-        { 
-          expiration: { 
-            maxEntries: 30, 
+        {
+          expiration: {
+            maxEntries: 30,
             maxAgeSeconds: MAX_AGE.JS,
             purgeOnQuotaError: true
-          } 
+          }
         },
-        { 
-          cacheableResponse: { 
+        {
+          cacheableResponse: {
             statuses: [0, 200]
-          } 
+          }
         }
       ]
     }
   },
-  
-  // Imágenes - Cache First con validación
+
+  // Images - Cache First with validation
   {
     pattern: /\.(?:png|jpg|jpeg|webp|gif|svg|ico)(?:\?.*)?$/i,
     strategy: CACHE_STRATEGIES.CACHE_FIRST,
     options: {
       cacheName: `${CACHE_NAME}-images`,
       plugins: [
-        { 
-          expiration: { 
-            maxEntries: 100, 
+        {
+          expiration: {
+            maxEntries: 100,
             maxAgeSeconds: MAX_AGE.IMG,
             purgeOnQuotaError: true
-          } 
+          }
         },
-        { 
-          cacheableResponse: { 
+        {
+          cacheableResponse: {
             statuses: [0, 200]
-          } 
+          }
         }
       ]
     }
   },
-  
-  // Fuentes - Cache First con validación
+
+  // Fonts - Cache First with validation
   {
     pattern: /\.(?:woff|woff2|ttf|eot|otf)(?:\?.*)?$/i,
     strategy: CACHE_STRATEGIES.CACHE_FIRST,
     options: {
       cacheName: `${CACHE_NAME}-fonts`,
       plugins: [
-        { 
-          expiration: { 
-            maxEntries: 20, 
+        {
+          expiration: {
+            maxEntries: 20,
             maxAgeSeconds: MAX_AGE.FONT,
             purgeOnQuotaError: true
-          } 
+          }
         },
-        { 
-          cacheableResponse: { 
+        {
+          cacheableResponse: {
             statuses: [0, 200]
-          } 
+          }
         }
       ]
     }
   },
-  
-  // Recursos de terceros - Stale While Revalidate
+
+  // Third-party resources - Stale While Revalidate
   {
     pattern: /^https?:\/\/(?:fonts\.googleapis\.com|cdn\.jsdelivr\.net|unpkg\.com)/,
     strategy: CACHE_STRATEGIES.STALE_WHILE_REVALIDATE,
@@ -299,46 +269,46 @@ const ROUTE_STRATEGIES = Object.freeze([
       cacheName: `${CACHE_NAME}-third-party`,
       networkTimeoutSeconds: NETWORK_TIMEOUT,
       plugins: [
-        { 
-          expiration: { 
-            maxEntries: 50, 
-            maxAgeSeconds: MAX_AGE.OTHER * 7, // 1 semana
+        {
+          expiration: {
+            maxEntries: 50,
+            maxAgeSeconds: MAX_AGE.OTHER * 7, // 1 week
             purgeOnQuotaError: true
-          } 
+          }
         },
-        { 
-          cacheableResponse: { 
+        {
+          cacheableResponse: {
             statuses: [0, 200]
-          } 
+          }
         }
       ]
     }
   },
-  
-  // Assets estáticos - Cache First con validación
+
+  // Static assets - Cache First with validation
   {
     pattern: /\.(?:js|css|woff2?|ttf|eot)$/i,
     strategy: CACHE_STRATEGIES.CACHE_FIRST,
     options: {
       cacheName: `${CACHE_NAME}-static-assets`,
       plugins: [
-        { 
-          expiration: { 
-            maxEntries: 50, 
+        {
+          expiration: {
+            maxEntries: 50,
             maxAgeSeconds: MAX_AGE.JS,
             purgeOnQuotaError: true
-          } 
+          }
         },
-        { 
-          cacheableResponse: { 
+        {
+          cacheableResponse: {
             statuses: [0, 200]
-          } 
+          }
         }
       ]
     }
   },
-  
-  // Peticiones de API - Network First con fallback a caché
+
+  // API requests - Network First with cache fallback
   {
     pattern: /\/api\//i,
     strategy: CACHE_STRATEGIES.NETWORK_FIRST,
@@ -346,25 +316,25 @@ const ROUTE_STRATEGIES = Object.freeze([
       cacheName: `${CACHE_NAME}-api`,
       networkTimeoutSeconds: 5,
       plugins: [
-        { 
-          expiration: { 
-            maxEntries: 30, 
+        {
+          expiration: {
+            maxEntries: 30,
             maxAgeSeconds: MAX_AGE.API,
             purgeOnQuotaError: true
-          } 
+          }
         },
-        { 
-          cacheableResponse: { 
+        {
+          cacheableResponse: {
             statuses: [0, 200, 404]
-          } 
+          }
         }
       ]
     }
   }
-];
+]);
 
-// Exportar configuración
-export {
+// Export Configuration
+const ServiceWorkerConfig = {
   CACHE_VERSION,
   CACHE_PREFIX,
   CACHE_NAME,

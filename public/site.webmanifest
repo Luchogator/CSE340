@@ -7,20 +7,12 @@
   "background_color": "#1a1a1a",
   "theme_color": "#1a1a1a",
   "orientation": "portrait",
-  "icons": [
-    {
-      "src": "/android-chrome-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/android-chrome-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
+  "icons": [],
+  "categories": [
+    "vehicles",
+    "automotive",
+    "cars"
   ],
-  "categories": ["vehicles", "automotive", "cars"],
   "screenshots": [
     {
       "src": "/screenshots/screenshot1.png",

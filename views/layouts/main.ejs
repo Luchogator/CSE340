@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/_head') %>
+</head>
+
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <%- include('../partials/_header') %>
+        <%- include('../partials/_nav') %>
+            <main id="main-content" class="container" tabindex="-1">
+                <%- body %>
+            </main>
+            <%- include('../partials/_footer') %>
+                <!-- Back to Top Button -->
+                <a href="#top" class="back-to-top" id="backToTop" aria-label="Back to top">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-arrow-up" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5" />
+                    </svg>
+                </a>
+                <!-- Font Awesome for Icons -->
+
+                <!-- Back to Top Script -->
+                <script>
+                    window.addEventListener('scroll', function () {
+                        const backToTop = document.getElementById('backToTop');
+                        if (window.pageYOffset > 300) {
+                            backToTop.classList.add('visible');
+                        } else {
+                            backToTop.classList.remove('visible');
+                        }
+                    });
+                </script>
+</body>
+
+</html>
