@@ -67,10 +67,10 @@ const CACHE_STRATEGIES = Object.freeze({
 const NOTIFICATION_CONFIG = {
   // Notification display time (in seconds)
   DISPLAY_TIME: 10,
-
+  
   // Default image URL for notifications
   DEFAULT_ICON: '/images/notification-icon.png',
-
+  
   // App colors for notifications
   COLORS: {
     PRIMARY: '#1976d2',
@@ -79,13 +79,13 @@ const NOTIFICATION_CONFIG = {
     TEXT: '#212121',
     ACCENT: '#ff4081'
   },
-
+  
   // Action configuration
   ACTIONS: [
     { action: 'view', title: 'View' },
     { action: 'dismiss', title: 'Dismiss' }
   ],
-
+  
   // Vibration pattern
   VIBRATION_PATTERN: [200, 100, 200, 100, 200, 100, 400]
 };
@@ -103,7 +103,7 @@ const PRECACHE_ASSETS = [
   // HTML Pages
   '/',
   '/404.html',
-
+  
   // Service Worker core files
   '/js/register-sw.js',
   '/js/sw-config.js'
@@ -152,23 +152,23 @@ const ROUTE_STRATEGIES = Object.freeze([
       cacheName: `${CACHE_NAME}-pages`,
       networkTimeoutSeconds: NETWORK_TIMEOUT,
       plugins: [
-        {
-          expiration: {
-            maxEntries: 20,
+        { 
+          expiration: { 
+            maxEntries: 20, 
             maxAgeSeconds: MAX_AGE.HTML,
             purgeOnQuotaError: true
-          }
+          } 
         },
-        {
-          cacheableResponse: {
+        { 
+          cacheableResponse: { 
             statuses: [0, 200],
             headers: { 'Content-Type': ['text/html', 'text/plain'] }
-          }
+          } 
         }
       ]
     }
   },
-
+  
   // CSS Files - Cache First with validation
   {
     pattern: /\.css(?:\?.*)?$/i,
@@ -176,22 +176,22 @@ const ROUTE_STRATEGIES = Object.freeze([
     options: {
       cacheName: `${CACHE_NAME}-styles`,
       plugins: [
-        {
-          expiration: {
-            maxEntries: 30,
+        { 
+          expiration: { 
+            maxEntries: 30, 
             maxAgeSeconds: MAX_AGE.CSS,
             purgeOnQuotaError: true
-          }
+          } 
         },
-        {
-          cacheableResponse: {
+        { 
+          cacheableResponse: { 
             statuses: [0, 200]
-          }
+          } 
         }
       ]
     }
   },
-
+  
   // JS Scripts - Cache First with validation
   {
     pattern: /\.js(?:\?.*)?$/i,
@@ -199,22 +199,22 @@ const ROUTE_STRATEGIES = Object.freeze([
     options: {
       cacheName: `${CACHE_NAME}-scripts`,
       plugins: [
-        {
-          expiration: {
-            maxEntries: 30,
+        { 
+          expiration: { 
+            maxEntries: 30, 
             maxAgeSeconds: MAX_AGE.JS,
             purgeOnQuotaError: true
-          }
+          } 
         },
-        {
-          cacheableResponse: {
+        { 
+          cacheableResponse: { 
             statuses: [0, 200]
-          }
+          } 
         }
       ]
     }
   },
-
+  
   // Images - Cache First with validation
   {
     pattern: /\.(?:png|jpg|jpeg|webp|gif|svg|ico)(?:\?.*)?$/i,
@@ -222,22 +222,22 @@ const ROUTE_STRATEGIES = Object.freeze([
     options: {
       cacheName: `${CACHE_NAME}-images`,
       plugins: [
-        {
-          expiration: {
-            maxEntries: 100,
+        { 
+          expiration: { 
+            maxEntries: 100, 
             maxAgeSeconds: MAX_AGE.IMG,
             purgeOnQuotaError: true
-          }
+          } 
         },
-        {
-          cacheableResponse: {
+        { 
+          cacheableResponse: { 
             statuses: [0, 200]
-          }
+          } 
         }
       ]
     }
   },
-
+  
   // Fonts - Cache First with validation
   {
     pattern: /\.(?:woff|woff2|ttf|eot|otf)(?:\?.*)?$/i,
@@ -245,22 +245,22 @@ const ROUTE_STRATEGIES = Object.freeze([
     options: {
       cacheName: `${CACHE_NAME}-fonts`,
       plugins: [
-        {
-          expiration: {
-            maxEntries: 20,
+        { 
+          expiration: { 
+            maxEntries: 20, 
             maxAgeSeconds: MAX_AGE.FONT,
             purgeOnQuotaError: true
-          }
+          } 
         },
-        {
-          cacheableResponse: {
+        { 
+          cacheableResponse: { 
             statuses: [0, 200]
-          }
+          } 
         }
       ]
     }
   },
-
+  
   // Third-party resources - Stale While Revalidate
   {
     pattern: /^https?:\/\/(?:fonts\.googleapis\.com|cdn\.jsdelivr\.net|unpkg\.com)/,
@@ -269,22 +269,22 @@ const ROUTE_STRATEGIES = Object.freeze([
       cacheName: `${CACHE_NAME}-third-party`,
       networkTimeoutSeconds: NETWORK_TIMEOUT,
       plugins: [
-        {
-          expiration: {
-            maxEntries: 50,
+        { 
+          expiration: { 
+            maxEntries: 50, 
             maxAgeSeconds: MAX_AGE.OTHER * 7, // 1 week
             purgeOnQuotaError: true
-          }
+          } 
         },
-        {
-          cacheableResponse: {
+        { 
+          cacheableResponse: { 
             statuses: [0, 200]
-          }
+          } 
         }
       ]
     }
   },
-
+  
   // Static assets - Cache First with validation
   {
     pattern: /\.(?:js|css|woff2?|ttf|eot)$/i,
@@ -292,22 +292,22 @@ const ROUTE_STRATEGIES = Object.freeze([
     options: {
       cacheName: `${CACHE_NAME}-static-assets`,
       plugins: [
-        {
-          expiration: {
-            maxEntries: 50,
+        { 
+          expiration: { 
+            maxEntries: 50, 
             maxAgeSeconds: MAX_AGE.JS,
             purgeOnQuotaError: true
-          }
+          } 
         },
-        {
-          cacheableResponse: {
+        { 
+          cacheableResponse: { 
             statuses: [0, 200]
-          }
+          } 
         }
       ]
     }
   },
-
+  
   // API requests - Network First with cache fallback
   {
     pattern: /\/api\//i,
@@ -316,17 +316,17 @@ const ROUTE_STRATEGIES = Object.freeze([
       cacheName: `${CACHE_NAME}-api`,
       networkTimeoutSeconds: 5,
       plugins: [
-        {
-          expiration: {
-            maxEntries: 30,
+        { 
+          expiration: { 
+            maxEntries: 30, 
             maxAgeSeconds: MAX_AGE.API,
             purgeOnQuotaError: true
-          }
+          } 
         },
-        {
-          cacheableResponse: {
+        { 
+          cacheableResponse: { 
             statuses: [0, 200, 404]
-          }
+          } 
         }
       ]
     }
