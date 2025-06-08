@@ -1,7 +1,68 @@
-<h1><%= errorCode %> Error</h1>
-<main class="error-container">
-  <div class="error-content">
-    <img src="/images/site-crash.png" alt="Site crash" style="max-width:100%;">
-    <p class="error-message"><%= message %></p>
-  </div>
-</main>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= errorCode %> Error - CSE Motors</title>
+    <link rel="stylesheet" href="/css/error-styles.css">
+    <style>
+        /* Ensure light theme for error pages */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        .dark-mode-toggle {
+            display: none !important;
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <main class="error-container">
+        <div class="error-content">
+            <div class="error-code"><%= errorCode %></div>
+            <h1 class="error-title">
+                <% if (errorCode === 404) { %>
+                    Page Not Found
+                <% } else if (errorCode === 500) { %>
+                    Server Error
+                <% } else if (errorCode === 400) { %>
+                    Bad Request
+                <% } else { %>
+                    Something Went Wrong
+                <% } %>
+            </h1>
+            
+            <img src="/images/site-crash.png" alt="Error" class="error-image">
+            
+            <div class="error-message">
+                <% if (errorCode === 404) { %>
+                    The page you're looking for doesn't exist or has been moved.
+                <% } else if (errorCode === 500) { %>
+                    Oops! Something went wrong on our end. Our team has been notified and we're working to fix it.
+                <% } else if (errorCode === 400) { %>
+                    The request could not be processed due to invalid data.
+                <% } else { %>
+                    <%= message || 'An unexpected error occurred.' %>
+                <% } %>
+            </div>
+            
+            <div class="error-actions">
+                <a href="/" class="btn btn-home">Go to Homepage</a>
+                <a href="javascript:history.back()" class="btn">Go Back</a>
+            </div>
+            
+            <% if (process.env.NODE_ENV === 'development' && error) { %>
+                <details class="error-details">
+                    <summary>Error Details (Development Only)</summary>
+                    <pre><%= error.stack %></pre>
+                </details>
+            <% } %>
+        </div>
+    </main>
+</body>
+</html>

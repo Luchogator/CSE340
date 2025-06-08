@@ -1,8 +1,12 @@
-<h1><%= title %></h1>
-<main>
+<h1 class="page-title"><%= title %></h1>
+
+<div class="inventory-grid-container">
   <% if (grid) { %>
     <%- grid %>
   <% } else { %>
-    <p class="notice">No vehicles could be found.</p>
+    <div class="no-vehicles">
+      <p>No vehicles found in this classification.</p>
+      <p><a href="/" class="button">Return to Home</a></p>
+    </div>
   <% } %>
-</main>
+</div>
