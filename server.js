@@ -52,12 +52,11 @@ app.use(async (err, req, res, next) => {
   res.status(status).render('errors/error', {
     title: `${status} Error`,
     message: err.message,
-    nav: res.locals.nav,
     errorCode: status,
   });
 });
 
 // Start the server
 app.listen(port, () => {
-    console.log(`Servidor corriendo en http://localhost:${port}`);
+    console.log(`Server running at http://localhost:${port}`);
 });
