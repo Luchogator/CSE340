@@ -1,4 +1,4 @@
-const pool = require("../database"); // TODO: Adjust path to your database pool configuration
+const pool = require("../database"); // Database connection pool
 
 /* ***************************
  *  Get inventory item by inv_id
