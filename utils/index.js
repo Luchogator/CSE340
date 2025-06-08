@@ -70,15 +70,20 @@ async function buildClassificationGrid(data) {
       let imageName = v.inv_thumbnail || 
                    (v.inv_image ? v.inv_image.replace(/(\.[^\.]+)$/, '_tn$1') : 'no-image_tn.jpg');
       
-      // Normalize image path
-      if (imageName.startsWith('/images/')) {
-        imageName = imageName.substring(1); // Remove leading slash if present
-      } else if (!imageName.startsWith('images/')) {
-        imageName = `images/vehicles/${imageName}`;
+      // Normalize image path - ensure it points to the correct location in public folder
+      let imagePath;
+      
+      if (imageName.startsWith('http')) {
+        // If it's a full URL, use it as is
+        imagePath = imageName;
+      } else {
+        // Remove any leading slashes or paths
+        const cleanName = imageName.replace(/^[\\/]+/, '').replace(/^images[\\/]vehicles[\\/]?/, '');
+        // Construct the path relative to the public folder
+        imagePath = `/images/vehicles/${cleanName}`.replace(/\/+/g, '/');
       }
       
-      // Ensure we don't have double slashes
-      const imagePath = `/${imageName}`.replace(/\/+/g, '/');
+      console.log(`Image path for ${v.inv_make} ${v.inv_model}:`, imagePath);
       
       validVehicles++;
       

@@ -13,8 +13,24 @@ app.use(morgan('dev'));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middleware for static files
-app.use(express.static(path.join(__dirname, 'public')));
+// Middleware for static files with cache control
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: '1d',
+  setHeaders: (res, path) => {
+    if (path.endsWith('.html')) {
+      // Don't cache HTML files
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    } else {
+      // Cache other static assets
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+    }
+  }
+}));
+
+// Serve static files from the root directory (for backward compatibility)
+app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 
 // Middleware for express-ejs-layouts
 app.use(expressLayouts);
@@ -47,7 +63,41 @@ app.get('/error', (req, res, next) => {
 app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;
+  console.error(`404 Error: ${req.originalUrl} not found`);
   next(err);
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  // Log the error
+  console.error(`[${new Date().toISOString()}] Error: ${err.message}`);
+  console.error(err.stack);
+  
+  // Set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // Render the error page
+  res.status(err.status || 500);
+  if (req.accepts('html')) {
+    // If the client accepts HTML, render the error page
+    res.render('error', {
+      title: `Error ${err.status || 500}`,
+      message: err.message,
+      error: req.app.get('env') === 'development' ? err : {}
+    });
+  } else if (req.accepts('json')) {
+    // If the client accepts JSON, send a JSON response
+    res.json({
+      error: {
+        status: err.status || 500,
+        message: err.message
+      }
+    });
+  } else {
+    // Default to plain text
+    res.type('txt').send(`Error ${err.status || 500}: ${err.message}`);
+  }
 });
 
 // Error handler

@@ -727,26 +727,59 @@ main#main-content.container {
 footer .error-link {
     color: #ffffff !important; /* Force white color for better visibility */
     text-decoration: none !important;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    margin-left: 0.5rem;
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    background-color: rgba(255, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    display: inline-block;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    margin: 0.5rem;
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+footer .error-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #ff5555, #dd0000);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 footer .error-link:hover,
 footer .error-link:focus {
     color: #ffffff !important;
-    background-color: rgba(255, 0, 0, 0.8);
+    background: linear-gradient(135deg, #ff5555, #dd0000);
     text-decoration: none !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    outline: 2px solid rgba(255, 255, 255, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.12);
+    outline: none;
+}
+
+footer .error-link:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure the error link is visible on all screen sizes */
+@media (max-width: 768px) {
+    footer .error-link {
+        display: flex;
+        margin: 0.8rem auto;
+        width: 80%;
+        max-width: 250px;
+    }
 }
 
 footer .error-link:active {
