@@ -16,10 +16,8 @@ async function buildVehicleDetailPage(req, res, next) {
       //   grid,
       // })
       const grid = await utilities.buildInventoryDetailGrid(data);
-      const nav = await utilities.getNav(); // Assuming getNav might be added to utilities later for navigation
       res.render("./inventory/detail", {
         title: data.inv_year + " " + data.inv_make + " " + data.inv_model + " details",
-        nav, // For navigation partial
         grid, // The HTML grid for the vehicle details
       });
     } else {
@@ -35,4 +33,22 @@ async function buildVehicleDetailPage(req, res, next) {
   }
 }
 
-module.exports = { buildVehicleDetailPage };
+/* ***************************
+ *  Build inventory by classification view
+ * ************************** */
+async function buildClassificationView(req, res, next) {
+  try {
+    const classificationId = req.params.classificationId;
+    const data = await invModel.getInventoryByClassificationId(classificationId);
+    const grid = await utilities.buildClassificationGrid(data);
+    const className = data.length ? data[0].classification_name : '';
+    res.render("./inventory/classification", {
+      title: `${className} Vehicles`,
+      grid,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { buildVehicleDetailPage, buildClassificationView };
