@@ -77,105 +77,54 @@ async function buildClassificationView(req, res, next) {
   try {
     console.log('\n=== Starting buildClassificationView ===');
     
-    // Get classification identifier from URL parameters (could be ID or slug)
-    const classificationParam = req.params.classificationId;
-    console.log('Classification parameter from URL:', classificationParam);
+    // Get classification slug from URL parameters
+    const classificationSlug = req.params.classificationId.toLowerCase();
+    console.log('Classification slug from URL:', classificationSlug);
     
-    let classificationId;
-    let classificationSlug = classificationParam;
     let classification;
+    let classificationName = 'Vehicles';
+    let data = [];
     
     // Check if this is the special 'Custom' classification
-    if (classificationParam.toLowerCase() === 'custom') {
+    if (classificationSlug === 'custom') {
       console.log('Custom classification detected - showing all vehicles');
-      // Set a special flag to indicate we want all vehicles
-      classificationId = 'custom';
-      classificationName = 'Custom';
-      classificationSlug = 'custom';
-    } 
-    // Check if the parameter is a number (ID) or a string (slug)
-    else if (/^\d+$/.test(classificationParam)) {
-      // It's a numeric ID
-      classificationId = parseInt(classificationParam, 10);
-      console.log('Numeric classification ID detected:', classificationId);
-      
-      // Get classification by ID to get the slug
-      classification = await invModel.getClassificationById(classificationId);
-      if (classification) {
-        classificationSlug = utilities.slugify(classification.classification_name);
-      }
+      classificationName = 'All Vehicles';
+      data = await invModel.getAllVehicles();
     } else {
-      // It's a slug, find the classification by name
-      console.log('Slug detected, looking up classification by name...');
-      const allClassifications = await invModel.getClassifications();
-      classification = allClassifications.find(
-        c => utilities.slugify(c.classification_name) === classificationParam
-      );
+      // Look up the classification by slug
+      console.log('Looking up classification by slug:', classificationSlug);
+      classification = await invModel.getClassificationBySlug(classificationSlug);
       
-      if (classification) {
-        classificationId = classification.classification_id;
-        console.log(`Found classification: ${classification.classification_name} (ID: ${classificationId})`);
-      } else {
-        console.error(`No classification found for slug: ${classificationParam}`);
+      if (!classification) {
+        console.error(`No classification found for slug: ${classificationSlug}`);
         const err = new Error('Classification not found');
         err.status = 404;
         return next(err);
       }
+      
+      console.log(`Found classification: ${classification.classification_name} (ID: ${classification.classification_id})`);
+      classificationName = classification.classification_name;
+      
+      // Get vehicles for this classification
+      data = await invModel.getInventoryByClassificationSlug(classificationSlug);
     }
     
-    if (!classificationId || isNaN(classificationId)) {
-      const errorMsg = `Invalid classification: ${classificationParam}`;
-      console.error(errorMsg);
-      const err = new Error(errorMsg);
-      err.status = 400;
-      return next(err);
-    }
-    
-    // Get the navigation data
-    console.log('Fetching navigation data...');
-    const nav = await utilities.getNav();
-    
-    // Get the vehicles for this classification
-    let data;
-    if (classificationId === 'custom') {
-      console.log('Fetching all vehicles for Custom classification...');
-      data = await invModel.getAllVehicles();
-    } else {
-      console.log(`Fetching vehicles for classification ID: ${classificationId}...`);
-      data = await invModel.getInventoryByClassificationId(classificationId);
-    }
-    
-    // Set the classification name for the title and breadcrumb if not already set
-    if (!classificationName) {
-      classificationName = classification ? 
-        classification.classification_name : 
-        (data[0]?.classification_name || 'Vehicles');
-    }
-    
-    if (!data || data.length === 0) {
-      console.log(`No vehicles found for classification ID: ${classificationId}`);
-      // Still render the page but with a message
-      return res.render("./inventory/classification", {
-        title: `${classificationName} Vehicles`,
-        nav,
-        grid: '<p class="notice">No vehicles found in this classification.</p>',
-        currentYear: new Date().getFullYear(),
-        classificationName,
-        classificationSlug
-      });
-    }
-    
-    console.log(`Found ${data.length} vehicles for classification ID: ${classificationId}`);
-    
-    // Build the grid of vehicles
+    // Generate the vehicle grid HTML
     const grid = await utilities.buildClassificationGrid(data);
     
-    // Render the view with the vehicle grid
-    res.render("./inventory/classification", {
-      title: `${classificationName} Vehicles`,
+    // Build the navigation
+    const nav = await utilities.getNav();
+    
+    // Set the current year for the footer
+    const currentYear = new Date().getFullYear();
+    
+    // Render the view
+    console.log(`Rendering classification view for: ${classificationName}`);
+    res.render('inventory/classification', {
+      title: `${classificationName} - Vehicles`,
       nav,
       grid,
-      currentYear: new Date().getFullYear(),
+      currentYear,
       classificationName,
       classificationSlug
     });

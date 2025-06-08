@@ -1,2 +1,0 @@
-This file preserves the folder structure. Remove it once actual files are added.
-

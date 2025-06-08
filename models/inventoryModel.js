@@ -130,11 +130,53 @@ async function getAllVehicles() {
   }
 }
 
+// ***************************
+// Get classification by slug or name
+// ***************************
+async function getClassificationBySlug(slug) {
+  try {
+    const sql = `
+      SELECT * 
+      FROM classification 
+      WHERE LOWER(classification_name) = LOWER($1) 
+         OR LOWER(REPLACE(classification_name, ' ', '-')) = LOWER($1)
+    `;
+    const result = await pool.query(sql, [slug]);
+    return result.rows[0];
+  } catch (error) {
+    console.error('getClassificationBySlug error:', error);
+    throw error;
+  }
+}
+
+// ***************************
+// Get all vehicles for a classification by slug
+// ***************************
+async function getInventoryByClassificationSlug(slug) {
+  try {
+    const sql = `
+      SELECT i.*, c.classification_name
+      FROM inventory i
+      JOIN classification c ON i.classification_id = c.classification_id
+      WHERE LOWER(c.classification_name) = LOWER($1) 
+         OR LOWER(REPLACE(c.classification_name, ' ', '-')) = LOWER($1)
+      ORDER BY i.inv_make, i.inv_model
+    `;
+    const result = await pool.query(sql, [slug]);
+    return result.rows;
+  } catch (error) {
+    console.error('getInventoryByClassificationSlug error:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   getInventoryByInvId,
   getClassifications,
   getInventoryByClassificationId,
-  getAllVehicles,
   getClassificationById,
-  getVehicleById
+  getVehicleById,
+  getAllVehicles,
+  getClassificationBySlug,
+  getInventoryByClassificationSlug
 };

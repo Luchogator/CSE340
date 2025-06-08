@@ -92,7 +92,7 @@ async function buildClassificationGrid(data) {
       
       grid += `
         <li class="vehicle-card">
-          <a href="/inv/vehicle/${v.inv_id}" class="vehicle-link">
+          <a href="/inv/detail/${v.inv_id}" class="vehicle-link">
             <div class="image-container">
               <img src="${imagePath}" 
                    alt="${v.inv_make} ${v.inv_model}" 
