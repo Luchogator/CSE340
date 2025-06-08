@@ -2,9 +2,10 @@
 * Utilities for CSE 340
 * ************************************ */
 
+const invModel = require("../models/inventoryModel");
+
 /* ********************************************************
  *  Function to build the inventory detail HTML
- *  This will be implemented more fully as per Assignment 3 requirements
  * **************************************************** */
 const buildInventoryDetailGrid = async function(itemData){
   let grid = ''; // Initialize grid as an empty string
@@ -32,15 +33,41 @@ const buildInventoryDetailGrid = async function(itemData){
 /* **************************************
  * Build the classification view HTML
  * ************************************ */
+async function buildClassificationGrid(data){
+  let grid;
+  if(data && data.length){
+    grid = '<ul id="inv-display">';
+    data.forEach(vehicle => {
+      grid += `<li>`;
+      grid += `<a href="/inv/detail/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">`;
+      grid += `<img src="${vehicle.inv_thumbnail}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}"></a>`;
+      grid += '<div class="namePrice">';
+      grid += `<h2><a href="/inv/detail/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">${vehicle.inv_make} ${vehicle.inv_model}</a></h2>`;
+      grid += `<span>$${new Intl.NumberFormat('en-US').format(vehicle.inv_price)}</span>`;
+      grid += '</div>';
+      grid += `</li>`;
+    });
+    grid += '</ul>';
+  }else{
+    grid = '<p class="notice">Sorry, no matching vehicles could be found.</p>';
+  }
+  return grid;
+}
+
 async function getNav(){
-  // For now, let's return a simple navigation structure or an empty string.
-  // This will be built dynamically later in the course.
-  let nav = "<ul>";
-  nav += '<li><a href="/" title="Home page">Home</a></li>';
-  // Placeholder for dynamic classification links
-  // nav += '<li><a href="/inv/type/1" title="See our Classic cars">Classic</a></li>'; 
-  nav += "</ul>";
+  const classifications = await invModel.getClassifications();
+  const order = ["Custom", "Sedan", "Sport", "SUV", "Truck"];
+  classifications.sort((a, b) => order.indexOf(a.classification_name) - order.indexOf(b.classification_name));
+  let nav = '';
+  nav += '<li role="none">';
+  nav += '<a href="/" role="menuitem" tabindex="0">Home</a>';
+  nav += '</li>';
+  classifications.forEach((row) => {
+    nav += '<li role="none">';
+    nav += `<a href="/inv/type/${row.classification_id}" role="menuitem" tabindex="0">${row.classification_name}</a>`;
+    nav += '</li>';
+  });
   return nav;
 }
 
-module.exports = { buildInventoryDetailGrid, getNav };
+module.exports = { buildInventoryDetailGrid, buildClassificationGrid, getNav };
