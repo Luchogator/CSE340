@@ -1130,3 +1130,15 @@ textarea:focus {
         order: 1;
     }
 }
+/* Error link */
+.error-link { color: var(--accent-color); text-decoration: none; }
+.error-link:hover { text-decoration: underline; }
+
+
+/* Inventory Grid */
+#inv-display { list-style:none; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; padding:0; }
+#inv-display li { border:1px solid #ccc; border-radius:8px; overflow:hidden; text-align:center; }
+#inv-display img { width:100%; height:auto; }
+.namePrice { padding:0.5rem; }
+.namePrice h2 { font-size:1rem; margin:0.5rem 0; }
+
