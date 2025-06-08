@@ -1129,25 +1129,21 @@ textarea:focus {
     .upgrades {
         order: 1;
     }
-}
 /* Error link */
-.error-link {
-  color: var(--secondary-color);
-  text-decoration: none;
-}
-.error-link:hover {
-  text-decoration: underline;
-}
+.error-link { color: var(--accent-color); text-decoration: none; }
+.error-link:hover { text-decoration: underline; }
+
 
 
 /* Inventory Grid */
 #inv-display {
   list-style: none;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
   padding: 0;
-  justify-content: center;
+}
+
 }
 #inv-display li {
   border: 1px solid #ccc;
@@ -1165,33 +1161,5 @@ textarea:focus {
 .namePrice h2 {
   font-size: 1rem;
   margin: 0.5rem 0;
-}
-@media (min-width: 600px) {
-  #inv-display {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (min-width: 900px) {
-  #inv-display {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* Error page */
-.error-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  min-height: 60vh;
-  padding: 2rem;
-}
-.error-content img {
-  max-width: 100%;
-  height: auto;
-}
-.error-message {
-  font-size: 1.2rem;
-  margin-top: 1rem;
 }
 
