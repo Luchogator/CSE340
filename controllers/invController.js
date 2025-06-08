@@ -35,4 +35,24 @@ async function buildVehicleDetailPage(req, res, next) {
   }
 }
 
-module.exports = { buildVehicleDetailPage };
+/* ***************************
+ *  Build inventory by classification view
+ * ************************** */
+async function buildClassificationView(req, res, next) {
+  try {
+    const classificationId = req.params.classificationId;
+    const data = await invModel.getInventoryByClassificationId(classificationId);
+    const nav = await utilities.getNav();
+    const grid = await utilities.buildClassificationGrid(data);
+    const className = data.length ? data[0].classification_name : '';
+    res.render("./inventory/classification", {
+      title: `${className} Vehicles`,
+      nav,
+      grid,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { buildVehicleDetailPage, buildClassificationView };
