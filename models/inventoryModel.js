@@ -1,4 +1,4 @@
-const pool = require("../database"); // Database connection pool
+const pool = require("../database"); // TODO: Adjust path to your database pool configuration
 
 /* ***************************
  *  Get inventory item by inv_id
@@ -19,34 +19,4 @@ async function getInventoryByInvId(inv_id) {
   }
 }
 
-/* ***************************
- *  Get all classifications
- * ************************** */
-async function getClassifications() {
-  const data = await pool.query(
-    "SELECT * FROM public.classification ORDER BY classification_name"
-  );
-  return data.rows;
-}
-
-/* ***************************
- *  Get inventory by classification_id
- * ************************** */
-async function getInventoryByClassificationId(classification_id) {
-  const data = await pool.query(
-    `SELECT i.inv_id, i.inv_make, i.inv_model, i.inv_year, i.inv_price,
-            i.inv_thumbnail, c.classification_name
-       FROM public.inventory AS i
-       JOIN public.classification AS c
-         ON i.classification_id = c.classification_id
-      WHERE i.classification_id = $1`,
-    [classification_id]
-  );
-  return data.rows;
-}
-
-module.exports = {
-  getInventoryByInvId,
-  getClassifications,
-  getInventoryByClassificationId,
-};
+module.exports = { getInventoryByInvId };
