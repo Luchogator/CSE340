@@ -1129,10 +1129,10 @@ textarea:focus {
     .upgrades {
         order: 1;
     }
-}
 /* Error link */
 .error-link { color: var(--accent-color); text-decoration: none; }
 .error-link:hover { text-decoration: underline; }
+
 
 
 /* Inventory Grid */
@@ -1142,6 +1142,8 @@ textarea:focus {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
   padding: 0;
+}
+
 }
 #inv-display li {
   border: 1px solid #ccc;
@@ -1160,5 +1162,4 @@ textarea:focus {
   font-size: 1rem;
   margin: 0.5rem 0;
 }
-
 
