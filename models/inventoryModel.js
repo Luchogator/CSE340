@@ -95,10 +95,46 @@ async function getVehicleById(inv_id) {
   }
 }
 
+async function getAllVehicles() {
+  try {
+    const query = `
+      SELECT 
+        i.inv_id, 
+        i.inv_make, 
+        i.inv_model, 
+        i.inv_year, 
+        i.inv_price,
+        i.inv_thumbnail,
+        c.classification_name
+      FROM 
+        public.inventory AS i
+      JOIN 
+        public.classification AS c ON i.classification_id = c.classification_id
+      ORDER BY 
+        i.inv_make, i.inv_model`;
+    
+    console.log('Fetching all vehicles...');
+    const result = await pool.query(query);
+    console.log(`Found ${result.rowCount} total vehicles`);
+    
+    if (result.rowCount > 0) {
+      console.log('Sample vehicle data:', JSON.stringify(result.rows[0], null, 2));
+    } else {
+      console.log('No vehicles found in the database');
+    }
+    
+    return result.rows;
+  } catch (error) {
+    console.error('Error in getAllVehicles:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   getInventoryByInvId,
   getClassifications,
   getInventoryByClassificationId,
+  getAllVehicles,
   getClassificationById,
   getVehicleById
 };

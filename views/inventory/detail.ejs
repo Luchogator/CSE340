@@ -1,17 +1,93 @@
-<%# Standard EJS opening tags. Assumes you have a main layout file. %>
+<%- include('../partials/_header', { title: title }) %>
 
-<% if (title) { %>
-  <h1><%- title %></h1>
-<% } else { 
-  res.redirect('/');
-} %>
+<main class="container">
+  <!-- Breadcrumb Navigation -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li><a href="/inv/">Inventory</a></li>
+      <% if (classificationName) { %>
+        <li><a href="/inv/classification/<%= classificationSlug %>"><%= classificationName %></a></li>
+      <% } %>
+      <li aria-current="page"><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></li>
+    </ol>
+  </nav>
 
-<main>
+  <!-- Vehicle Detail Content -->
   <% if (grid) { %>
     <%- grid %>
   <% } else { %>
-    <p class="notice">Sorry, no vehicle information could be found.</p>
+    <div class="error-message">
+      <div class="error-content">
+        <i class="fas fa-exclamation-circle"></i>
+        <h2>Vehicle Not Found</h2>
+        <p>We're sorry, but we couldn't find the vehicle you're looking for.</p>
+        <div class="action-buttons">
+          <a href="/inv/" class="btn primary-btn">Browse Our Inventory</a>
+          <a href="/" class="btn secondary-btn">Return to Home</a>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Related Vehicles Section -->
+  <% if (relatedVehicles && relatedVehicles.length > 0) { %>
+    <section class="related-vehicles">
+      <h2>You May Also Like</h2>
+      <div class="vehicle-grid">
+        <% relatedVehicles.forEach(vehicle => { %>
+          <div class="vehicle-card">
+            <a href="/inv/detail/<%= vehicle.inv_id %>" class="vehicle-link">
+              <div class="image-container">
+                <img 
+                  src="<%= vehicle.inv_thumbnail ? `/images/vehicles/${vehicle.inv_thumbnail}` : '/images/vehicles/no-image_tn.jpg' %>" 
+                  alt="<%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %>"
+                  onerror="this.onerror=null; this.src='/images/vehicles/no-image_tn.jpg'"
+                >
+              </div>
+              <div class="vehicle-info">
+                <h3 class="vehicle-title"><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h3>
+                <p class="vehicle-price">$<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %></p>
+              </div>
+            </a>
+          </div>
+        <% }) %>
+      </div>
+    </section>
   <% } %>
 </main>
 
-<%# Standard EJS closing tags %>
+<%- include('../partials/_footer', { currentYear: currentYear }) %>
+
+<!-- Add any additional scripts specific to this page -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Image gallery functionality
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const mainImage = document.querySelector('.main-image img');
+    
+    if (thumbnails.length > 0 && mainImage) {
+      thumbnails.forEach(thumb => {
+        thumb.addEventListener('click', function(e) {
+          e.preventDefault();
+          // Remove active class from all thumbnails
+          thumbnails.forEach(t => t.classList.remove('active'));
+          // Add active class to clicked thumbnail
+          this.classList.add('active');
+          // Update main image source
+          mainImage.src = this.dataset.fullsize || this.src;
+        });
+      });
+    }
+    
+    // Contact form handling
+    const contactForm = document.querySelector('.contact-form');
+    if (contactForm) {
+      contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Add form submission logic here
+        alert('Thank you for your interest! A sales representative will contact you soon.');
+      });
+    }
+  });
+</script>

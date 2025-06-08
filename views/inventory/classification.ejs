@@ -1,12 +1,49 @@
-<h1 class="page-title"><%= title %></h1>
+<%- include('../partials/_header', { title: title }) %>
 
-<div class="inventory-grid-container">
-  <% if (grid) { %>
-    <%- grid %>
-  <% } else { %>
-    <div class="no-vehicles">
-      <p>No vehicles found in this classification.</p>
-      <p><a href="/" class="button">Return to Home</a></p>
-    </div>
-  <% } %>
-</div>
+<main class="container">
+  <!-- Breadcrumb Navigation -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li><a href="/inv/">Inventory</a></li>
+      <% if (classificationName && classificationName !== 'Vehicles') { %>
+        <li><a href="/inv/classification/<%= classificationSlug %>"><%= classificationName %></a></li>
+      <% } %>
+    </ol>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <h1 class="page-title"><%= classificationName || 'Our Vehicles' %></h1>
+    <% if (classificationName && classificationName !== 'Vehicles') { %>
+      <p class="page-subtitle">Browse our selection of quality <%= classificationName.toLowerCase() %></p>
+    <% } %>
+  </header>
+
+  <!-- Vehicle Grid -->
+  <div class="inventory-grid">
+    <% if (grid) { %>
+      <%- grid %>
+    <% } else { %>
+      <div class="no-vehicles">
+        <div class="no-vehicles-content">
+          <i class="fas fa-car-side"></i>
+          <h2>No Vehicles Found</h2>
+          <p>We couldn't find any vehicles in this category at the moment.</p>
+          <a href="/" class="btn primary-btn">Return to Home</a>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</main>
+
+<%- include('../partials/_footer', { currentYear: currentYear }) %>
+
+<!-- Add any additional scripts specific to this page -->
+<script>
+  // Add any JavaScript needed for the classification page
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add any page-specific JavaScript here
+    console.log('Classification page loaded');
+  });
+</script>

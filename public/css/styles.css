@@ -18,6 +18,8 @@
     --text-color: #333;
     --link-color: var(--primary-color);
     --link-hover: #004d99;
+    --error-link-color: #ffcc00; /* Light yellow for error link */
+    --error-link-hover: #ffffff; /* White on hover for better contrast */
     
     --border-radius: 8px;
     --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -721,6 +723,55 @@ main#main-content.container {
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* Error link in footer */
+footer .error-link {
+    color: #ffffff !important; /* Force white color for better visibility */
+    text-decoration: none !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-left: 0.5rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    background-color: rgba(255, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: inline-block;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+footer .error-link:hover,
+footer .error-link:focus {
+    color: #ffffff !important;
+    background-color: rgba(255, 0, 0, 0.8);
+    text-decoration: none !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    outline: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+footer .error-link:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure error link is visible on dark backgrounds */
+.site-footer {
+    color: #fff;
+    position: relative;
+    z-index: 10;
+}
+
+.site-footer a:not(.error-link) {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.site-footer a:not(.error-link):hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
 .footer-bottom .container {
     display: flex;
     flex-direction: column;
@@ -1269,3 +1320,7 @@ textarea:focus {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+/* Import other CSS files */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url('inventory.css');
