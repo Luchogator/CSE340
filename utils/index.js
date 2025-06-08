@@ -55,13 +55,18 @@ async function buildClassificationGrid(data){
 }
 
 async function getNav(){
-  const data = await invModel.getClassifications();
-  let nav = '<ul>';
-  nav += '<li><a href="/" title="Home page">Home</a></li>';
-  data.forEach(row => {
-    nav += `<li><a href="/inv/type/${row.classification_id}" title="See our ${row.classification_name} vehicles">${row.classification_name}</a></li>`;
+  const classifications = await invModel.getClassifications();
+  const order = ["Custom", "Sedan", "Sport", "SUV", "Truck"];
+  classifications.sort((a, b) => order.indexOf(a.classification_name) - order.indexOf(b.classification_name));
+  let nav = '';
+  nav += '<li role="none">';
+  nav += '<a href="/" role="menuitem" tabindex="0">Home</a>';
+  nav += '</li>';
+  classifications.forEach((row) => {
+    nav += '<li role="none">';
+    nav += `<a href="/inv/type/${row.classification_id}" role="menuitem" tabindex="0">${row.classification_name}</a>`;
+    nav += '</li>';
   });
-  nav += '</ul>';
   return nav;
 }
 

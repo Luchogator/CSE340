@@ -52,7 +52,6 @@ app.use(async (err, req, res, next) => {
   res.status(status).render('errors/error', {
     title: `${status} Error`,
     message: err.message,
-    nav: res.locals.nav,
     errorCode: status,
   });
 });
