@@ -7,23 +7,25 @@ function slugify(name) {
 
 async function getNav() {
   try {
-    const classifications = await invModel.getClassifications();
+    // Get classifications ordered by classification_id
+    let classifications = await invModel.getClassifications();
+    
+    // Create HTML for the navigation
     let html = '<ul role="menubar">';
     
     // Add Home link
     html += '<li role="none"><a href="/" role="menuitem">Home</a></li>';
     
-    // Add Custom link right after Home
-    html += `
-      <li role="none">
-        <a href="/inv/classification/custom" role="menuitem">
-          Custom
-        </a>
-      </li>`;
-    
-    // Add all other classifications
+    // Add all classifications, including Custom
     classifications.forEach(c => {
-      const slug = slugify(c.classification_name);
+      // Skip any duplicate "Custom" entries that might be in the database
+      if (c.classification_name.toLowerCase() === 'custom' && 
+          classifications.some(cc => cc.classification_id < c.classification_id && 
+                                  cc.classification_name.toLowerCase() === 'custom')) {
+        return; // Skip duplicate Custom entries
+      }
+      
+      const slug = c.classification_slug || slugify(c.classification_name);
       html += `
         <li role="none">
           <a href="/inv/classification/${slug}" role="menuitem">
@@ -36,11 +38,10 @@ async function getNav() {
     return html;
   } catch (error) {
     console.error('Error in getNav:', error);
-    // Return a basic navigation with Custom link if there's an error
+    // Return a basic navigation with just Home if there's an error
     return `
       <ul role="menubar">
         <li role="none"><a href="/" role="menuitem">Home</a></li>
-        <li role="none"><a href="/inv/classification/custom" role="menuitem">Custom</a></li>
       </ul>`;
   }
 }

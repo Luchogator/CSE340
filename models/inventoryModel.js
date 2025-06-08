@@ -1,12 +1,33 @@
 const pool = require('../database');
 
 // ***************************
-// Get all classifications, ordered by name
+// Get all classifications, ordered by classification_id
 // ***************************
 async function getClassifications() {
   try {
-    const sql = 'SELECT * FROM classification ORDER BY classification_name';
+    const sql = `
+      SELECT 
+        classification_id,
+        classification_name,
+        classification_slug,
+        COALESCE(classification_slug, LOWER(REPLACE(classification_name, ' ', '-'))) as computed_slug
+      FROM public.classification 
+      ORDER BY classification_id`;
+      
     const result = await pool.query(sql);
+    console.log(`Fetched ${result.rowCount} classifications`);
+    
+    // Log the first few classifications for debugging
+    if (result.rowCount > 0) {
+      console.log('Sample classification data:', 
+        result.rows.slice(0, 3).map(c => ({
+          id: c.classification_id, 
+          name: c.classification_name,
+          slug: c.classification_slug || 'null'
+        }))
+      );
+    }
+    
     return result.rows;
   } catch (error) {
     console.error('getClassifications error:', error);
