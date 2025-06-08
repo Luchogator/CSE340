@@ -1,0 +1,405 @@
+<%# views/partials/_nav.ejs - Simple Navigation Partial %>
+<nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+  <div class="container">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <strong>CSE Motors</strong>
+      </a>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <div id="navMenu" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="/">Home</a>
+        <a class="navbar-item" href="/inv/type/1">Custom</a>
+        <a class="navbar-item" href="/inv/type/2">Sedan</a>
+        <a class="navbar-item" href="/inv/type/3">Sport</a>
+        <a class="navbar-item" href="/inv/type/4">SUV</a>
+        <a class="navbar-item" href="/inv/type/5">Truck</a>
+        <a class="navbar-item" href="/inv/">
+          <span class="icon">
+            <i class="fas fa-car"></i>
+          </span>
+          <span>Inventory</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<style>
+/* Base Navigation Styles */
+.navbar {
+  background-color: #2c3e50;
+  min-height: 4rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar.is-scrolled {
+  background-color: rgba(44, 62, 80, 0.95);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-height: 3.5rem;
+}
+
+/* Container */
+.navbar > .container {
+  max-width: 1400px;
+  padding: 0 1.5rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* Brand/Logo */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  margin-right: 2rem;
+}
+
+.logo-link {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.logo-link:hover {
+  color: #3498db;
+}
+
+.logo {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+/* Navigation Menu */
+.navbar-menu {
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-start,
+.navbar-end {
+  display: flex;
+  align-items: center;
+}
+
+/* Navigation Items */
+.navbar-item,
+.navbar-link {
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.navbar-item:hover,
+.navbar-link:hover {
+  color: #3498db;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.navbar-item.is-active,
+.navbar-link.is-active {
+  color: #3498db;
+  font-weight: 600;
+}
+
+.navbar-item.is-active::after,
+.navbar-link.is-active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 1rem;
+  right: 1rem;
+  height: 3px;
+  background-color: #3498db;
+  border-radius: 3px 3px 0 0;
+}
+
+/* Icons */
+.navbar-item .icon,
+.navbar-link .icon {
+  margin-right: 0.5rem;
+  font-size: 0.9em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25em;
+  height: 1.25em;
+}
+
+/* Mobile Menu Button */
+.navbar-burger {
+  display: none;
+  background: none;
+  border: none;
+  width: 3.25rem;
+  height: 3.25rem;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  margin-left: auto;
+}
+
+.navbar-burger span {
+  display: block;
+  position: absolute;
+  width: 20px;
+  height: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+.navbar-burger span:nth-child(1) {
+  top: calc(50% - 8px);
+}
+
+.navbar-burger span:nth-child(2) {
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.navbar-burger span:nth-child(3) {
+  bottom: calc(50% - 6px);
+}
+
+.navbar-burger.is-active span:nth-child(1) {
+  transform: translate(-50%, 3px) rotate(45deg);
+  top: 50%;
+}
+
+.navbar-burger.is-active span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar-burger.is-active span:nth-child(3) {
+  transform: translate(-50%, -5px) rotate(-45deg);
+  bottom: 50%;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 1023px) {
+  .navbar-menu {
+    position: fixed;
+    top: 4rem;
+    left: 0;
+    right: 0;
+    background: #2c3e50;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem 0;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navbar-menu.is-active {
+    display: flex;
+    animation: slideDown 0.3s ease-out;
+  }
+  
+  .navbar-start,
+  .navbar-end {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .navbar-item,
+  .navbar-link {
+    padding: 0.75rem 1.5rem;
+    justify-content: flex-start;
+  }
+  
+  .navbar-burger {
+    display: block;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scroll Behavior */
+html {
+  scroll-padding-top: 4rem;
+  scroll-behavior: smooth;
+}
+
+/* Add padding to body to account for fixed navbar */
+body {
+  padding-top: 4rem;
+}
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Navbar burger menu toggle
+    const navbarBurgers = Array.from(document.querySelectorAll('.navbar-burger'));
+    
+    // Add click event to each burger menu
+    navbarBurgers.forEach(el => {
+      el.addEventListener('click', () => {
+        // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+        el.classList.toggle('is-active');
+        const target = document.getElementById(el.dataset.target);
+        if (target) {
+          target.classList.toggle('is-active');
+        }
+      });
+    });
+
+    // Close menu when clicking on a nav item on mobile
+    document.querySelectorAll('.navbar-item').forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth < 768) {
+          navbarBurgers.forEach(burger => burger.classList.remove('is-active'));
+          const menus = document.querySelectorAll('.navbar-menu');
+          menus.forEach(menu => menu.classList.remove('is-active'));
+        }
+      });
+    });
+  });
+  
+  // Set active state for current page
+  const currentPath = window.location.pathname;
+  document.querySelectorAll('.navbar-item:not(.has-dropdown), .navbar-link:not(.has-dropdown)').forEach(link => {
+    const href = link.getAttribute('href');
+    if (href && href !== '/' && currentPath.startsWith(href)) {
+      link.classList.add('is-active');
+      
+      // If this is a dropdown item, also highlight the parent
+      const dropdownParent = link.closest('.has-dropdown');
+      if (dropdownParent) {
+        const dropdownToggle = dropdownParent.querySelector('.navbar-link');
+        if (dropdownToggle) {
+          dropdownToggle.classList.add('is-active');
+        }
+      }
+    }
+  });
+  
+  // Handle dropdown toggles on mobile
+  document.querySelectorAll('.navbar-link').forEach(link => {
+    const dropdown = link.nextElementSibling;
+    if (dropdown && dropdown.classList.contains('navbar-dropdown')) {
+      link.addEventListener('click', (e) => {
+        if (window.innerWidth <= 1023) { // Mobile view
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // Close all other dropdowns
+          document.querySelectorAll('.navbar-dropdown').forEach(d => {
+            if (d !== dropdown) {
+              d.style.display = 'none';
+            }
+          });
+          
+          // Toggle current dropdown
+          const isHidden = dropdown.style.display === 'none' || !dropdown.style.display;
+          dropdown.style.display = isHidden ? 'block' : 'none';
+        }
+      });
+    }
+  });
+  
+  // Close dropdown when clicking outside on mobile
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 1023) { // Mobile view
+      if (!e.target.matches('.navbar-link') && !e.target.closest('.navbar-link')) {
+        document.querySelectorAll('.navbar-dropdown').forEach(dropdown => {
+          dropdown.style.display = 'none';
+        });
+      }
+    }
+  });
+  
+  // Search functionality
+  const searchInput = document.querySelector('.search-input');
+  const searchButton = searchInput?.closest('.field')?.querySelector('.button');
+  
+  if (searchButton && searchInput) {
+    const performSearch = () => {
+      const query = searchInput.value.trim();
+      if (query) {
+        window.location.href = `/search?q=${encodeURIComponent(query)}`;
+      }
+    };
+    
+    searchButton.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        performSearch();
+      }
+    });
+  }
+  
+  // Handle window resize
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      // Reset mobile menu state on desktop
+      if (window.innerWidth > 1023) {
+        navbarBurgers.forEach(burger => burger.classList.remove('is-active'));
+        navbarMenus.forEach(menu => menu.classList.remove('is-active'));
+        document.body.style.overflow = '';
+        // Reset any open dropdowns
+        document.querySelectorAll('.navbar-dropdown').forEach(dropdown => {
+          dropdown.style.display = '';
+        });
+      }
+    }, 250);
+  });
+});
+
+// Add current path to body for CSS targeting
+document.body.setAttribute('data-path', window.location.pathname);
+
+// Handle page transitions
+window.addEventListener('beforeunload', () => {
+  document.body.classList.add('page-transition-out');
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('page-transition-in');
+  
+  // Remove transition class after animation completes
+  setTimeout(() => {
+    document.body.classList.remove('page-transition-in');
+  }, 300);
+});
+</script>

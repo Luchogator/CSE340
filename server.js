@@ -23,6 +23,10 @@ app.get('/', (req, res) => {
     });
 });
 
+// Inventory routes
+const inventoryRoutes = require("./routes/inventoryRoute");
+app.use("/inv", inventoryRoutes);
+
 // Start the server
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);

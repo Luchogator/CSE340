@@ -1,0 +1,19 @@
+<%# Standard EJS opening tags. Assumes you have a main layout file. %>
+
+<% if (title) { %>
+  <h1><%- title %></h1>
+<% } else { 
+  res.redirect('/');
+} %>
+
+<%- nav %>
+
+<main>
+  <% if (grid) { %>
+    <%- grid %>
+  <% } else { %>
+    <p class="notice">Sorry, no vehicle information could be found.</p>
+  <% } %>
+</main>
+
+<%# Standard EJS closing tags %>
