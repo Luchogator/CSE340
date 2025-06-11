@@ -2,24 +2,22 @@ const invModel = require("../models/inventory-model")
 
 const Util = {}
 
-// Build navigation using IDs
-Util.getNav = async function (req, res, next) {
+// Build navigation using IDs with horizontal layout and classes
+Util.getNav = async function () {
   let data = await invModel.getClassifications()
-  let list = "<ul>"
-  list += '<li><a href="/" title="Home page">Home</a></li>'
+  let list = '<ul class="main-nav" role="menubar">'
+  list += '<li role="none"><a href="/" class="nav-link" role="menuitem" tabindex="0">HOME</a></li>'
   data.rows.forEach((row) => {
-    list += "<li>"
+    list += '<li role="none">'
     list +=
       '<a href="/inv/type/' +
       row.classification_id +
-      '" title="See our inventory of ' +
-      row.classification_name +
-      ' vehicles">' +
-      row.classification_name +
-      "</a>"
-    list += "</li>"
+      '" class="nav-link" role="menuitem" tabindex="0">' +
+      row.classification_name.toUpperCase() +
+      '</a>'
+    list += '</li>'
   })
-  list += "</ul>"
+  list += '</ul>'
   return list
 }
 

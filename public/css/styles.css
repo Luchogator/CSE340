@@ -260,6 +260,61 @@ nav a[role="menuitem"]:focus-visible {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* --- Navigation Bar Styles --- */
+.main-nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+  background: #222;
+  padding: 0.5rem 0;
+  margin: 0;
+  border-bottom: 3px solid #ff9900;
+}
+.main-nav li {
+  display: flex;
+  align-items: center;
+}
+.nav-link {
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
+}
+.nav-link:hover, .nav-link:focus {
+  background: #ff9900;
+  color: #222;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  outline: none;
+}
+.main-nav .active, .main-nav .nav-link[aria-current="page"] {
+  background: #fff;
+  color: #ff9900;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+@media (max-width: 700px) {
+  .main-nav {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+  }
+  .nav-link {
+    width: 100%;
+    text-align: center;
+    font-size: 1rem;
+  }
+}
+/* --- End Navigation Bar Styles --- */
+
 /* ===== MAIN CONTENT ===== */
 main {
     padding: 3rem 0;
@@ -954,7 +1009,7 @@ main#main-content.container {
 
 @media (min-width: 992px) {
     .upgrade-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
     }
     
     .footer-section.about {

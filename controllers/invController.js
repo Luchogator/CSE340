@@ -4,17 +4,21 @@ const invModel = require("../models/inventory-model")
 async function buildByClassificationId(req, res, next) {
   const classification_id = parseInt(req.params.classificationId)
   try {
+    const classificationsData = await invModel.getClassifications();
+    const classifications = classificationsData.rows;
     const data = await invModel.getInventoryByClassificationId(classification_id)
     if (data.rows.length < 1) {
       return res.render("inventory/classification", {
         title: "No vehicles found",
         vehicles: [],
+        classifications,
         currentYear: new Date().getFullYear()
       })
     }
     res.render("inventory/classification", {
       title: data.rows[0].classification_id + " Vehicles",
       vehicles: data.rows,
+      classifications,
       currentYear: new Date().getFullYear()
     })
   } catch (error) {
@@ -26,17 +30,21 @@ async function buildByClassificationId(req, res, next) {
 async function buildByVehicleId(req, res, next) {
   const inv_id = parseInt(req.params.invId)
   try {
+    const classificationsData = await invModel.getClassifications();
+    const classifications = classificationsData.rows;
     const data = await invModel.getVehicleById(inv_id)
     if (data.rows.length < 1) {
       return res.render("inventory/detail", {
         title: "Vehicle not found",
         vehicle: null,
+        classifications,
         currentYear: new Date().getFullYear()
       })
     }
     res.render("inventory/detail", {
       title: data.rows[0].inv_make + " " + data.rows[0].inv_model,
       vehicle: data.rows[0],
+      classifications,
       currentYear: new Date().getFullYear()
     })
   } catch (error) {

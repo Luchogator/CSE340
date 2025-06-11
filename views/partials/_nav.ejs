@@ -1,4 +1,7 @@
 <nav aria-label="Main navigation">
+    <% if (typeof nav !== 'undefined' && nav) { %>
+        <%- nav %>
+    <% } else { %>
     <ul role="menubar">
         <li role="none">
             <a href="/" 
@@ -21,4 +24,5 @@
             <% }); %>
         <% } %>
     </ul>
+    <% } %>
 </nav>
