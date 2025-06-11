@@ -71,17 +71,19 @@ app.use("/inv", inventoryRoute)
 
 
 
-// Route to test 500 error
-app.get('/error/500', (req, res, next) => {
-  // Simulate a server error
+// Ruta para probar el error 500
+app.get('/test-500', (req, res) => {
+  console.log('Solicitando página de error 500...');
   const error = new Error('Internal Server Error');
   error.status = 500;
-  next(error);
+  throw error;
 });
 
 // File Not Found Route - must be last route in list
-app.use(async (req, res, next) => {
-  next({ status: 404, message: 'Page Not Found' });
+app.use((req, res, next) => {
+  const error = new Error('Page Not Found');
+  error.status = 404;
+  next(error);
 });
 
 /* ***********************
@@ -95,16 +97,23 @@ app.use(async (err, req, res, next) => {
   
   console.error(`Error ${status}: ${message}`, err.stack);
   
-  // Si es un error 404, no mostrar el stack trace
   if (status === 404) {
     console.log(`404 - Ruta no encontrada: ${req.originalUrl}`);
   }
   
   try {
-    const errorHtml = await utilities.buildErrorPage(status, message);
-    res.status(status).send(errorHtml);
+    // Usar la plantilla error.ejs unificada
+    res.status(status).render('errors/error', {
+      title: `${status} - ${status === 404 ? 'Page Not Found' : 'Server Error'}`,
+      status: status,
+      message: message,
+      nav: res.locals.nav || [],
+      currentYear: new Date().getFullYear(),
+      layout: 'layouts/main'
+    });
   } catch (renderError) {
     console.error('Error al renderizar la página de error:', renderError);
+    // Fallback en caso de error al renderizar
     res.status(500).send(`
       <!DOCTYPE html>
       <html>
@@ -116,8 +125,7 @@ app.use(async (err, req, res, next) => {
         </style>
       </head>
       <body>
-        <h1>500 - Internal Server Error</h1>
-        <p>An error occurred while processing your request.</p>
+        <h1>${status} - ${status === 404 ? 'Page Not Found' : 'Server Error'}</h1>
         <p>${message}</p>
         <div>
           <a href="/" style="display: inline-block; padding: 10px 20px; margin: 10px; background: #28a745; color: white; text-decoration: none; border-radius: 5px;">Go to Homepage</a>
