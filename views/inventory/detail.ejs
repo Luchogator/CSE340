@@ -1,7 +1,3 @@
-<%- include('../partials/head') %>
-<%- include('../partials/header') %>
-<%- include('../partials/navigation') %>
-
 <main>
   <% if (vehicle) { %>
     <h1><%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
@@ -16,5 +12,3 @@
     <p>Vehicle not found.</p>
   <% } %>
 </main>
-
-<%- include('../partials/footer') %>
