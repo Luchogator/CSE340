@@ -71,25 +71,63 @@ app.use("/inv", inventoryRoute)
 
 
 
+// Route to test 500 error
+app.get('/error/500', (req, res, next) => {
+  // Simulate a server error
+  const error = new Error('Internal Server Error');
+  error.status = 500;
+  next(error);
+});
+
 // File Not Found Route - must be last route in list
 app.use(async (req, res, next) => {
-  next({status: 404, message: 'Sorry, we appear to have lost that page.'})
-})
-
+  next({ status: 404, message: 'Page Not Found' });
+});
 
 /* ***********************
 * Express Error Handler
 * Place after all other middleware
 *************************/
+// Error handling middleware
 app.use(async (err, req, res, next) => {
-  let nav = await utilities.getNav();
-  res.status(err.status || 500).render("layouts/main", {
-    title: "Error",
-    nav,
-    currentYear: new Date().getFullYear(),
-    body: `<h1>Error</h1><p>${err.message || 'Internal Server Error'}</p>`
-  });
-})
+  const status = err.status || 500;
+  const message = err.message || 'Internal Server Error';
+  
+  console.error(`Error ${status}: ${message}`, err.stack);
+  
+  // Si es un error 404, no mostrar el stack trace
+  if (status === 404) {
+    console.log(`404 - Ruta no encontrada: ${req.originalUrl}`);
+  }
+  
+  try {
+    const errorHtml = await utilities.buildErrorPage(status, message);
+    res.status(status).send(errorHtml);
+  } catch (renderError) {
+    console.error('Error al renderizar la página de error:', renderError);
+    res.status(500).send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Error</title>
+        <style>
+          body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+          h1 { color: #dc3545; }
+        </style>
+      </head>
+      <body>
+        <h1>500 - Internal Server Error</h1>
+        <p>An error occurred while processing your request.</p>
+        <p>${message}</p>
+        <div>
+          <a href="/" style="display: inline-block; padding: 10px 20px; margin: 10px; background: #28a745; color: white; text-decoration: none; border-radius: 5px;">Go to Homepage</a>
+          <button onclick="window.history.back()" style="padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Go Back</button>
+        </div>
+      </body>
+      </html>
+    `);
+  }
+});
 
 
 

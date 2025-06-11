@@ -1,4 +1,5 @@
 const invModel = require("../models/inventory-model")
+const path = require('path')
 
 const Util = {}
 
@@ -84,6 +85,70 @@ Util.buildSingleVehicleDisplay = async (vehicle) => {
   svd += "</div>"
   svd += "</section>"
   return svd
+}
+
+// Build error page HTML
+Util.buildErrorPage = async function(status, message) {
+  try {
+    const view = path.join(__dirname, '../views/errors/error.ejs');
+    const nav = await this.getNav();
+    
+    const data = {
+      status: status,
+      message: message,
+      title: status === 404 ? '404 - Page Not Found' : '500 - Server Error',
+      nav: nav,
+      currentYear: new Date().getFullYear()
+    };
+    
+    // Renderizar la plantilla de error
+    return await this.render(view, data);
+  } catch (error) {
+    console.error("Error building error page:", error);
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Error</title>
+        <style>
+          body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+          h1 { color: #dc3545; }
+          .error-container { max-width: 600px; margin: 0 auto; }
+          .btn { 
+            display: inline-block; 
+            padding: 10px 20px; 
+            margin: 10px; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 5px;
+          }
+          .btn-home { background-color: #28a745; }
+          .btn-back { background-color: #007bff; }
+        </style>
+      </head>
+      <body>
+        <div class="error-container">
+          <h1>${status || 500} - ${status === 404 ? 'Page Not Found' : 'Server Error'}</h1>
+          <p>${message || 'An error occurred while processing your request.'}</p>
+          <div>
+            <a href="/" class="btn btn-home">Go to Homepage</a>
+            <button onclick="window.history.back()" class="btn btn-back">Go Back</button>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+  }
+}
+
+// Helper function to render EJS templates
+Util.render = async function(template, data) {
+  return new Promise((resolve, reject) => {
+    require('ejs').renderFile(template, data, {}, function(err, str) {
+      if (err) reject(err);
+      else resolve(str);
+    });
+  });
 }
 
 // Middleware For Handling Errors

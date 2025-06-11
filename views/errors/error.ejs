@@ -1,0 +1,99 @@
+<div class="error-container">
+    <h1 class="error-code"><%= status %></h1>
+    <p class="error-message">
+        <%= status === 404 ? 'Page Not Found' : 'Server Error' %>
+    </p>
+    <div class="error-image">
+        <img src="/images/site-crash.png" alt="Error Illustration" style="max-width: 100%; height: auto;">
+    </div>
+    <p class="error-description">
+        <%= status === 404 
+            ? 'Oops! The page you\'re looking for doesn\'t exist or has been moved.'
+            : 'Oops! Something went wrong on our end. Our team has been notified and we\'re working to fix it.'
+        %>
+    </p>
+    <div class="button-container">
+        <a href="/" class="btn btn-home">Go to Homepage</a>
+        <button onclick="window.history.back()" class="btn btn-back">Go Back</button>
+    </div>
+</div>
+
+<style>
+    main {
+        min-height: 70vh;
+        padding: 2rem;
+        background: url('/images/site/small_check.jpg') repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .error-container {
+        text-align: center;
+        padding: 2rem 1rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .error-code {
+        font-size: 6rem;
+        font-weight: bold;
+        color: #dc3545;
+        margin: 0 0 1rem;
+        line-height: 1;
+    }
+    .error-message {
+        font-size: 2rem;
+        color: #495057;
+        margin-bottom: 1.5rem;
+    }
+    .error-image {
+        max-width: 400px;
+        margin: 2rem auto;
+    }
+    .error-description {
+        color: #6c757d;
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+    .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+    .btn {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .btn-home {
+        background-color: #28a745;
+        color: white;
+    }
+    .btn-back {
+        background-color: #007bff;
+        color: white;
+    }
+    @media (max-width: 576px) {
+        .button-container {
+            flex-direction: column;
+            align-items: center;
+        }
+        .btn {
+            width: 100%;
+            max-width: 250px;
+            margin: 0.25rem 0;
+        }
+    }
+</style>
