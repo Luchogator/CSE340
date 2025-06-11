@@ -1,0 +1,18 @@
+<main>
+  <h1><%= title %></h1>
+  <div id="inv-list">
+    <% if (vehicles && vehicles.length > 0) { %>
+      <ul>
+        <% vehicles.forEach(function(vehicle) { %>
+          <li>
+            <a href="/inv/detail/<%= vehicle.inv_id %>">
+              <%= vehicle.inv_make %> <%= vehicle.inv_model %>
+            </a>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p>No vehicles found for this classification.</p>
+    <% } %>
+  </div>
+</main>
