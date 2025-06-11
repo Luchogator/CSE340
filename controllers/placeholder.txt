@@ -1,5 +1,0 @@
-<<<<<<< HEAD
-This is only meant to preserve the folder it resides in. It can be deleted when actual files are created and stored. 
-=======
-This is only meant to preserved the folder it resides in. It can be deleted when actual files are created and stored.
->>>>>>> 8ef5dd67054daeab6107ab389884766c28cbe41a
