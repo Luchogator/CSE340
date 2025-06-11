@@ -10,6 +10,8 @@ const Util = require('./utilities/index');
 const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
+const session = require('express-session');
+const pool = require('./database');
 
 // EJS configuration
 app.set('view engine', 'ejs');
@@ -49,12 +51,19 @@ app.use(function(req, res, next){
   next()
 })
 
+// Set currentYear for all views (move this above all routes and error handlers)
+app.use((req, res, next) => {
+  res.locals.currentYear = new Date().getFullYear();
+  next();
+});
+
 
 /* ***********************
  * Routes
  *************************/
 app.use(static)
 //Index Route
+const utilities = require('./utilities');
 app.get("/", utilities.handleErrors(baseController.buildHome))
 
 // Inventory routes
@@ -73,7 +82,13 @@ app.use(async (req, res, next) => {
 * Place after all other middleware
 *************************/
 app.use(async (err, req, res, next) => {
-  let nav = await utilities.getNav()
+  let nav = await utilities.getNav();
+  res.status(err.status || 500).render("layouts/main", {
+    title: "Error",
+    nav,
+    currentYear: new Date().getFullYear(),
+    body: `<h1>Error</h1><p>${err.message || 'Internal Server Error'}</p>`
+  });
 })
 
 
