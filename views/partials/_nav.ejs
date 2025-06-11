@@ -1,28 +1,30 @@
-<nav aria-label="Main navigation">
-    <% if (typeof nav !== 'undefined' && nav) { %>
-        <%- nav %>
-    <% } else { %>
-    <ul role="menubar">
-        <li role="none">
-            <a href="/" 
-               class="<%= (title === 'Home') ? 'active' : '' %>" 
-               role="menuitem" 
-               tabindex="0"
-               <%= (title === 'Home') ? 'aria-current="page"' : '' %>>
-                Home
-            </a>
-        </li>
-        <% if (typeof classifications !== 'undefined' && classifications.length) { %>
-            <% classifications.forEach(function(classification) { %>
-                <li role="none">
-                    <a href="/inv/type/<%= classification.classification_id %>"
-                       role="menuitem"
-                       tabindex="0">
-                        <%= classification.classification_name %>
-                    </a>
-                </li>
-            <% }); %>
+<nav id="primary-nav" class="primary-nav" aria-label="Main navigation">
+    <div class="nav-container">
+        <% if (typeof nav !== 'undefined' && nav) { %>
+            <%- nav %>
+        <% } else { %>
+        <ul class="nav-menu" role="menubar">
+            <li role="none">
+                <a href="/" 
+                   class="<%= (title === 'Home') ? 'active' : '' %>" 
+                   role="menuitem" 
+                   tabindex="0"
+                   <%= (title === 'Home') ? 'aria-current="page"' : '' %>>
+                    Home
+                </a>
+            </li>
+            <% if (typeof classifications !== 'undefined' && classifications.length) { %>
+                <% classifications.forEach(function(classification) { %>
+                    <li role="none">
+                        <a href="/inv/type/<%= classification.classification_id %>"
+                           role="menuitem"
+                           tabindex="0">
+                            <%= classification.classification_name %>
+                        </a>
+                    </li>
+                <% }); %>
+            <% } %>
+        </ul>
         <% } %>
-    </ul>
-    <% } %>
+    </div>
 </nav>
