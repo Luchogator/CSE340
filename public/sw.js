@@ -179,10 +179,10 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('[Service Worker] Installing and precaching resources');
-        const assetsToPrecache = [...PRECACHE_ASSETS, OFFLINE_URL];
-        return cache.addAll(assetsToPrecache).catch(error => {
+        // Usamos PRECACHE_ASSETS que ya incluye OFFLINE_URL
+        return cache.addAll(PRECACHE_ASSETS).catch(error => {
           console.error('[Service Worker] Precache Error:', error);
-          console.warn('[Service Worker] Some resources failed to precache.', assetsToPrecache);
+          console.warn('[Service Worker] Some resources failed to precache.', PRECACHE_ASSETS);
           // We can still allow the service worker to install even if some precaching fails
           // depending on requirements. For now, re-throwing the error to make it visible.
           throw error;

@@ -102,11 +102,10 @@ const NOTIFICATION_CONFIG = {
 const PRECACHE_ASSETS = [
   // HTML Pages
   '/',
-  '/404.html',
+  '/offline.html',
   
   // Service Worker core files
-  '/js/register-sw.js',
-  '/js/sw-config.js'
+  '/register-sw.js'
 ];
 
 // ============================================
