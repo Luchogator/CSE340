@@ -1,14 +1,190 @@
-<main>
-  <% if (vehicle) { %>
-    <h1><%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
-    <img src="<%= vehicle.inv_image %>" alt="Image of <%= vehicle.inv_make %> <%= vehicle.inv_model %>">
-    <ul>
-      <li><strong>Price:</strong> $<%= vehicle.inv_price.toLocaleString() %></li>
-      <li><strong>Description:</strong> <%= vehicle.inv_description %></li>
-      <li><strong>Color:</strong> <%= vehicle.inv_color %></li>
-      <li><strong>Miles:</strong> <%= vehicle.inv_miles.toLocaleString() %></li>
-    </ul>
+<main class="container my-4">
+  <% if (vehicle) { 
+    // Format price with commas for thousands
+    const formattedPrice = new Intl.NumberFormat('en-US').format(vehicle.inv_price);
+    const formattedMiles = new Intl.NumberFormat('en-US').format(vehicle.inv_miles);
+  %>
+    <!-- Vehicle Title -->
+    <div class="mb-4">
+      <h1 class="display-5 fw-bold mb-4"><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
+    </div>
+    
+    <div class="vehicle-detail-container">
+      <!-- Vehicle Image -->
+      <div class="vehicle-image-container">
+        <img 
+          src="<%= vehicle.inv_image %>" 
+          alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>"
+          class="vehicle-image"
+        >
+      </div>
+      
+      <!-- Vehicle Details -->
+      <div class="vehicle-details">
+        <!-- Price -->
+        <div class="price-section">
+          <span class="price-label">Price</span>
+          <span class="price-amount">$<%= formattedPrice %></span>
+        </div>
+        
+        <!-- Description -->
+        <div class="description-section">
+          <h3 class="section-title">Description</h3>
+          <div class="description-text">
+            <p><%= vehicle.inv_description %></p>
+          </div>
+        </div>
+        
+        <!-- Specs -->
+        <div class="specs-grid">
+          <div class="spec-item">
+            <span class="spec-label">Color</span>
+            <span class="spec-value"><%= vehicle.inv_color %></span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Miles</span>
+            <span class="spec-value"><%= formattedMiles %></span>
+          </div>
+        </div>
+      </div>
+    </div>
   <% } else { %>
-    <p>Vehicle not found.</p>
+    <div class="alert alert-warning" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      Vehicle not found. Please check the URL and try again.
+    </div>
   <% } %>
 </main>
+
+<style>
+  body {
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  .vehicle-detail-container {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+  }
+
+  .vehicle-image-container {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .vehicle-image {
+    width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+
+  .vehicle-details {
+    flex: 1;
+    min-width: 0;
+    padding: 0 1rem;
+  }
+
+  .price-section {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 6px;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .price-label {
+    font-size: 1.25rem;
+    color: #6c757d;
+  }
+
+  .price-amount {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #2c3e50;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+
+  .description-section {
+    margin-bottom: 2rem;
+  }
+
+  .description-text {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .spec-item {
+    background-color: #f8f9fa;
+    padding: 1.25rem;
+    border-radius: 6px;
+  }
+
+  .spec-label {
+    display: block;
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .spec-value {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #2c3e50;
+  }
+
+
+  /* Responsive adjustments */
+  @media (max-width: 992px) {
+    .vehicle-detail-container {
+      flex-direction: column;
+    }
+    
+    .vehicle-image {
+      max-height: 400px;
+      width: auto;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .vehicle-details {
+      padding: 1rem 0 0 0;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .specs-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .price-section {
+      flex-direction: column;
+      text-align: center;
+      gap: 0.5rem;
+    }
+  }
+</style>

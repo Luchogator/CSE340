@@ -13,7 +13,7 @@
               <%= vehicle.inv_make %> <%= vehicle.inv_model %>
             </a>
             <div class="inventory-price">
-              $<%= vehicle.inv_price.toLocaleString() %>
+              $<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %>
             </div>
           </div>
         </div>
