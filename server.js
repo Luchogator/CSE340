@@ -66,49 +66,30 @@ app.use(session(sessionConfig));
 const flash = require('connect-flash');
 app.use(flash());
 
-// Middleware para inicializar res.locals.messages
-app.use((req, res, next) => {
-  res.locals.messages = {
-    error: [],
-    success: []
-  };
-  next();
-});
-
 // Middleware para manejar mensajes flash
 app.use((req, res, next) => {
-  // Asegurarse de que req.session existe
-  if (!req.session) {
-    req.session = {};
-  }
+  // Inicializar res.locals.messages
+  res.locals.messages = {
+    success: [],
+    error: []
+  };
   
-  // Inicializar mensajes flash si no existen
-  if (!req.session.flash) {
-    req.session.flash = { _: {} };
-  }
-  
-  // Inicializar res.locals.messages si no existe
-  res.locals.messages = res.locals.messages || { error: [], success: [] };
-  
-  // Obtener mensajes de la sesión
-  const flash = req.session.flash;
+  // Obtener mensajes flash
+  const flashMessages = req.flash();
   
   // Pasar mensajes a res.locals
-  if (flash.error) {
-    res.locals.messages.error = Array.isArray(flash.error) ? flash.error : [flash.error];
-    delete flash.error;
+  if (flashMessages.success && flashMessages.success.length > 0) {
+    res.locals.messages.success = Array.isArray(flashMessages.success) ? 
+      flashMessages.success : [flashMessages.success];
   }
   
-  if (flash.success) {
-    res.locals.messages.success = Array.isArray(flash.success) ? flash.success : [flash.success];
-    delete flash.success;
+  if (flashMessages.error && flashMessages.error.length > 0) {
+    res.locals.messages.error = Array.isArray(flashMessages.error) ? 
+      flashMessages.error : [flashMessages.error];
   }
   
-  // Guardar cambios en la sesión
-  req.session.save(err => {
-    if (err) console.error('Error al guardar la sesión:', err);
-    next();
-  });
+  // Pasar a la siguiente función de middleware
+  next();
 });
 
 // Set currentYear for all views (move this above all routes and error handlers)
