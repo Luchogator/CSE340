@@ -5,8 +5,8 @@
     const formattedMiles = new Intl.NumberFormat('en-US').format(vehicle.inv_miles);
   %>
     <!-- Vehicle Title -->
-    <div class="mb-4">
-      <h1 class="display-5 fw-bold mb-4"><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
+    <div class="vehicle-title-container">
+      <h1 class="vehicle-title"><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
     </div>
     
     <div class="vehicle-detail-container">
@@ -29,7 +29,7 @@
         
         <!-- Description -->
         <div class="description-section">
-          <h3 class="section-title">Description</h3>
+          <h2 class="section-title">Description</h2>
           <div class="description-text">
             <p><%= vehicle.inv_description %></p>
           </div>
@@ -92,35 +92,49 @@
   }
 
   .price-section {
-    background-color: #f8f9fa;
+    background-color: #f1f3f5; /* Slightly darker background for better contrast */
     padding: 1.5rem;
     border-radius: 6px;
     margin-bottom: 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border: 1px solid #dee2e6; /* Add subtle border */
   }
 
   .price-label {
     font-size: 1.25rem;
-    color: #6c757d;
+    color: #495057; /* Darker gray for better contrast */
+    font-weight: 500;
   }
 
   .price-amount {
     font-size: 1.75rem;
     font-weight: 700;
-    color: #2c3e50;
+    color: #000000; /* Changed from #2c3e50 to black for better contrast */
   }
 
   .section-title {
-    font-size: 1.25rem;
-    color: #6c757d;
+    font-size: 1.5rem;
+    color: #2c3e50;
     margin-bottom: 1rem;
-    font-weight: 500;
+    font-weight: 600;
+  }
+
+  .vehicle-title-container {
+    margin-bottom: 1rem;
+  }
+
+  .vehicle-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
   }
 
   .description-section {
     margin-bottom: 2rem;
+    margin-top: 1rem;
   }
 
   .description-text {
@@ -139,22 +153,24 @@
   }
 
   .spec-item {
-    background-color: #f8f9fa;
+    background-color: #f1f3f5; /* Slightly darker background for better contrast */
     padding: 1.25rem;
     border-radius: 6px;
+    border: 1px solid #dee2e6; /* Add subtle border */
   }
 
   .spec-label {
     display: block;
-    color: #6c757d;
-    font-size: 0.9rem;
+    color: #495057; /* Darker gray for better contrast */
+    font-size: 1rem;
     margin-bottom: 0.5rem;
+    font-weight: 500;
   }
 
   .spec-value {
     font-size: 1.1rem;
-    font-weight: 500;
-    color: #2c3e50;
+    font-weight: 600; /* Increased weight for better readability */
+    color: #000000; /* Changed from #2c3e50 to black for better contrast */
   }
 
 
