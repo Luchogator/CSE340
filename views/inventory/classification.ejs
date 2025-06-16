@@ -4,26 +4,27 @@
     <% if (vehicles && vehicles.length > 0) { %>
       <% vehicles.forEach(function(vehicle) { %>
         <div class="inventory-card">
-          <a href="/inv/detail/<%= vehicle.inv_id %>" class="inventory-image-link">
-            <img 
-              src="<%= vehicle.inv_image.replace('.jpg', '-tn.jpg').replace('.png', '-tn.png') %>" 
-              alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>" 
-              class="inventory-thumb" 
-              loading="lazy"
-              width="280"
-              height="157"
-            >
-          </a>
-          <div class="inventory-info">
-            <h2 class="inventory-title">
-              <a href="/inv/detail/<%= vehicle.inv_id %>">
-                <%= vehicle.inv_make %> <%= vehicle.inv_model %>
-              </a>
-            </h2>
-            <div class="inventory-price">
-              $<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %>
+          <a href="/inv/detail/<%= vehicle.inv_id %>" class="inventory-card-link">
+            <div class="inventory-image-container">
+              <img 
+                src="<%= vehicle.inv_image.replace('.jpg', '-tn.jpg').replace('.png', '-tn.png') %>" 
+                alt="" 
+                class="inventory-thumb" 
+                loading="lazy"
+                width="280"
+                height="157"
+                aria-hidden="true"
+              >
             </div>
-          </div>
+            <div class="inventory-info">
+              <h2 class="inventory-title">
+                <%= vehicle.inv_make %> <%= vehicle.inv_model %>
+              </h2>
+              <div class="inventory-price">
+                $<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %>
+              </div>
+            </div>
+          </a>
         </div>
       <% }) %>
     <% } else { %>
