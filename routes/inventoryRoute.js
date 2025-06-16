@@ -2,6 +2,9 @@ const express = require("express")
 const router = express.Router()
 const invController = require("../controllers/invController")
 
+// Route for management view
+router.get("/", invController.buildManagementView)
+
 // Route for inventory by classification id
 router.get("/type/:classificationId", invController.buildByClassificationId)
 

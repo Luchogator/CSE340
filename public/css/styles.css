@@ -1243,6 +1243,42 @@ main#main-content.container {
     top: 0;
 }
 
+/* ===== VISTA DE GESTIÓN ===== */
+.management-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.management-option {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.management-option:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  border-color: var(--primary-color);
+}
+
+.management-option .btn {
+  margin-bottom: 1rem;
+  min-width: 200px;
+}
+
+.management-option p {
+  color: #555;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
 /* Back to Top Button */
 .back-to-top {
     position: fixed;

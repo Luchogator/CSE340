@@ -66,7 +66,25 @@ async function buildByVehicleId(req, res, next) {
   }
 }
 
+// Render management view
+async function buildManagementView(req, res, next) {
+  try {
+    // Obtener mensaje flash si existe
+    const message = req.flash('success') || req.flash('error') || '';
+    
+    res.render('inventory/management', {
+      title: 'Vehicle Management',
+      message: message[0] || null, // Tomar el primer mensaje si existe
+      currentYear: new Date().getFullYear()
+    });
+  } catch (error) {
+    console.error('Error en buildManagementView:', error);
+    next(error);
+  }
+}
+
 module.exports = {
   buildByClassificationId,
-  buildByVehicleId
+  buildByVehicleId,
+  buildManagementView
 }

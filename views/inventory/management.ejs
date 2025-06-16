@@ -1,0 +1,21 @@
+<div class="content-container">
+    <h1 class="page-title">Vehicle Management</h1>
+    
+    <% if (message) { %>
+        <div class="notice">
+            <p><%= message %></p>
+        </div>
+    <% } %>
+    
+    <div class="management-options">
+        <div class="management-option">
+            <a href="/inv/add-classification" class="btn btn-primary">Add New Classification</a>
+            <p>Add a new vehicle classification to the database.</p>
+        </div>
+        
+        <div class="management-option">
+            <a href="/inv/add-inventory" class="btn btn-primary">Add New Vehicle</a>
+            <p>Add a new vehicle to the inventory.</p>
+        </div>
+    </div>
+</div>
