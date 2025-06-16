@@ -16,4 +16,7 @@ router.get("/type/:classificationId", invController.buildByClassificationId)
 // Route for vehicle detail by inv_id
 router.get("/detail/:invId", invController.buildByVehicleId)
 
+// Route to delete a classification
+router.post("/delete-classification/:id", invController.deleteClassification)
+
 module.exports = router

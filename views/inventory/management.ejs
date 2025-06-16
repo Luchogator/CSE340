@@ -24,4 +24,42 @@
             <p>Add a new vehicle to the inventory.</p>
         </div>
     </div>
+
+    <!-- Lista de clasificaciones existentes -->
+    <% if (classifications && classifications.length > 0) { %>
+        <div class="classifications-list" style="margin-top: 30px;">
+            <h2>Current Classifications</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% classifications.forEach(classification => { %>
+                        <tr>
+                            <td><%= classification.classification_id %></td>
+                            <td><%= classification.classification_name %></td>
+                            <td>
+                                <form method="POST" action="/inv/delete-classification/<%= classification.classification_id %>" 
+                                      style="display: inline-block;" 
+                                      onsubmit="return confirm('Are you sure you want to delete this classification? This action cannot be undone.');">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    <% } else { %>
+        <div class="alert alert-info" style="margin-top: 20px;">
+            No classifications found. Add a new classification using the button above.
+        </div>
+    <% } %>
 </div>

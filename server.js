@@ -4,6 +4,7 @@ console.log('DATABASE_URL:', process.env.DATABASE_URL);
 const express = require('express');
 const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
+const methodOverride = require('method-override');
 const app = express();
 const port = process.env.PORT || 5500;
 const Util = require('./utilities/index');
@@ -19,6 +20,9 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Middleware for parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+
+// Middleware for method override (for DELETE, PUT, etc.)
+app.use(methodOverride('_method'));
 
 // Middleware for static files
 app.use(express.static(path.join(__dirname, 'public')));

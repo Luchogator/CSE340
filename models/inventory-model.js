@@ -48,8 +48,51 @@ async function getVehicleById(inv_id) {
   )
 }
 
+/**
+ * Add a new classification
+ */
+async function addClassification(classification_name) {
+  try {
+    const sql = "INSERT INTO classification (classification_name) VALUES ($1) RETURNING *";
+    return await pool.query(sql, [classification_name]);
+  } catch (error) {
+    console.error("Error in addClassification:", error);
+    throw error;
+  }
+}
+
+/**
+ * Delete a classification by ID
+ */
+async function deleteClassification(classification_id) {
+  try {
+    // Primero verificar si hay vehículos usando esta clasificación
+    const vehicles = await pool.query(
+      "SELECT * FROM inventory WHERE classification_id = $1",
+      [classification_id]
+    );
+    
+    if (vehicles.rows.length > 0) {
+      throw new Error('Cannot delete classification that is in use by vehicles');
+    }
+    
+    // Si no hay vehículos, eliminar la clasificación
+    const result = await pool.query(
+      "DELETE FROM classification WHERE classification_id = $1 RETURNING *",
+      [classification_id]
+    );
+    
+    return result.rowCount > 0;
+  } catch (error) {
+    console.error("Error in deleteClassification:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   getClassifications,
   getInventoryByClassificationId,
-  getVehicleById
+  getVehicleById,
+  addClassification,
+  deleteClassification
 }
