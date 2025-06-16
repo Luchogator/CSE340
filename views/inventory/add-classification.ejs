@@ -1,35 +1,162 @@
 <div class="content-container">
     <h1 class="page-title">Add New Classification</h1>
     
-    <% if (message) { %>
-        <div class="notice" style="color: red; margin-bottom: 1rem; padding: 10px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px;">
-            <p><%= message %></p>
-        </div>
+    <!-- Mensajes de error -->
+    <% if (messages && messages.error && messages.error.length > 0) { %>
+        <% messages.error.forEach(function(msg) { %>
+            <% if (msg) { %>
+                <div class="alert alert-danger" style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; margin-bottom: 1rem; border-radius: 4px;">
+                    <%= msg %>
+                </div>
+            <% } %>
+        <% }); %>
+    <% } %>
+    
+    <!-- Mensajes de éxito -->
+    <% if (messages && messages.success && messages.success.length > 0) { %>
+        <% messages.success.forEach(function(msg) { %>
+            <% if (msg) { %>
+                <div class="alert alert-success" style="color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; padding: 10px; margin-bottom: 1rem; border-radius: 4px;">
+                    <%= msg %>
+                </div>
+            <% } %>
+        <% }); %>
     <% } %>
     
     <div class="form-container" style="background-color: #007bff; color: white; padding: 20px; border-radius: 8px; margin-bottom: 2rem;">
         <p style="font-weight: bold; margin: 0 0 10px 0;">FIELD IS REQUIRED.</p>
         <p style="font-style: italic; margin: 0 0 20px 0;">NAME MUST BE ALPHABETIC CHARACTERS ONLY.</p>
 
-        <form action="/inv/add-classification" method="post" class="classification-form">
+        <form id="classificationForm" action="/inv/add-classification" method="post" class="classification-form" novalidate>
             <input type="hidden" name="_method" value="POST">
-            <div class="form-group" style="margin-bottom: 1rem;">
-                <label for="classification_name" style="display: block; margin-bottom: 8px; font-weight: 500;">Classification Name</label>
-                <input type="text" id="classification_name" name="classification_name" 
-                       class="form-control" 
-                       value="<%= typeof classification_name !== 'undefined' ? classification_name : '' %>"
-                       style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;"
-                       required>
+            <% if (typeof csrfToken !== 'undefined') { %>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <% } %>
+            
+            <div class="form-group">
+                <label for="classification_name" class="form-label" style="color: white; margin-bottom: 8px; display: block;">Classification Name:</label>
+                <input 
+                    type="text" 
+                    id="classification_name" 
+                    name="classification_name" 
+                    class="form-control" 
+                    required
+                    title="Please fill out this field"
+                    pattern="[A-Za-z\s]+"
+                    <% if (formData && formData.classification_name) { %>
+                        value="<%= formData.classification_name %>"
+                    <% } %>
+                    style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; margin-bottom: 1rem;"
+                >
+                <div class="invalid-feedback" style="color: #f8d7da; margin-top: -10px; margin-bottom: 10px; font-style: italic;">Please enter a classification name (letters and spaces only)</div>
+                <div id="clientError" class="validation-error" style="display: none; color: #ffcc00; margin-top: 5px; margin-bottom: 10px; font-weight: bold;"></div>
             </div>
             
-            <button type="submit" class="btn" 
-                    style="background-color: white; color: #007bff; padding: 8px 20px; border: none; border-radius: 4px; font-weight: 500; cursor: pointer;">
-                Add Classification
-            </button>
+            <div class="form-actions" style="display: flex; justify-content: flex-start; gap: 10px;">
+                <button type="submit" class="btn btn-primary" style="background-color: #0056b3; border: none; padding: 10px 20px; color: white; border-radius: 4px; cursor: pointer;">
+                    Add Classification
+                </button>
+                <a href="/inv/" class="btn btn-secondary" style="background-color: #6c757d; border: none; padding: 10px 20px; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">
+                    Cancel
+                </a>
+            </div>
         </form>
     </div>
-    
-    <a href="/inv/" class="btn" style="display: inline-block; margin-top: 1rem; padding: 8px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px;">
-        Cancel
-    </a>
 </div>
+
+<script>
+// Client-side form validation
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('classificationForm');
+    const nameInput = document.getElementById('classification_name');
+    const clientErrorDiv = document.getElementById('clientError');
+    const serverErrorDiv = document.querySelector('.invalid-feedback');
+    let lastValidationMessage = '';
+    let isValidationActive = false;
+    
+    // Hide server error by default, show only when needed
+    if (serverErrorDiv) {
+        serverErrorDiv.style.display = 'none';
+    }
+    
+    // Real-time validation with debounce
+    let timeoutId;
+    nameInput.addEventListener('input', function() {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(validateName, 300);
+        
+        // Hide server error when user starts typing
+        if (serverErrorDiv) {
+            serverErrorDiv.style.display = 'none';
+        }
+        
+        // Show client error if needed
+        validateName();
+    });
+    
+    // Show required tooltip on focus
+    nameInput.addEventListener('focus', function() {
+        this.title = this.validity.valueMissing ? 
+            'Please enter a classification name' : 
+            'Enter only letters and spaces';
+    });
+    
+    // Form submission validation
+    form.addEventListener('submit', function(event) {
+        isValidationActive = true;
+        if (!validateName()) {
+            event.preventDefault();
+            return false;
+        }
+        return true;
+    });
+    
+    function validateName() {
+        const value = nameInput.value.trim();
+        const nameRegex = /^[a-zA-Z\s]+$/;
+        
+        // Clear previous validation state
+        nameInput.setCustomValidity('');
+        
+        if (!value) {
+            if (isValidationActive) {
+                showError('⚠️ Classification name is required');
+                showServerError(false);
+            }
+            return false;
+        } else if (!nameRegex.test(value)) {
+            if (isValidationActive) {
+                showError('⚠️ Only letters and spaces are allowed');
+                showServerError(false);
+            }
+            return false;
+        } else {
+            clearError();
+            return true;
+        }
+    }
+    
+    function showError(message) {
+        if (message === lastValidationMessage) return;
+        
+        clientErrorDiv.textContent = message;
+        clientErrorDiv.style.display = 'block';
+        lastValidationMessage = message;
+    }
+    
+    function showServerError(show = true) {
+        if (serverErrorDiv) {
+            serverErrorDiv.style.display = show ? 'block' : 'none';
+        }
+    }
+    
+    function clearError() {
+        clientErrorDiv.style.display = 'none';
+        lastValidationMessage = '';
+    }
+});
+
+function validateForm() {
+    return true; // Siempre retorna true para permitir envío
+}
+</script>

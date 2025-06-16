@@ -69,12 +69,24 @@ async function buildByVehicleId(req, res, next) {
 // Render management view
 async function buildManagementView(req, res, next) {
   try {
-    // Obtener mensaje flash si existe
-    const message = req.flash('success') || req.flash('error') || '';
+    // Obtener mensajes flash de la sesión
+    const flash = req.session.flash || {};
+    
+    // Preparar el objeto de mensajes para la vista
+    const messages = {
+      success: flash.success || [],
+      error: flash.error || []
+    };
+    
+    // Limpiar los mensajes después de usarlos
+    if (req.session.flash) {
+      delete req.session.flash;
+    }
     
     res.render('inventory/management', {
       title: 'Vehicle Management',
-      message: message[0] || null, // Tomar el primer mensaje si existe
+      flash: messages,
+      message: messages.success[0] || messages.error[0] || null,
       currentYear: new Date().getFullYear()
     });
   } catch (error) {
@@ -86,15 +98,28 @@ async function buildManagementView(req, res, next) {
 // Render add classification form
 async function buildAddClassification(req, res, next) {
   try {
-    // For GET requests, req.body will be undefined, so we provide a default empty value
-    const classificationName = (req.body && req.body.classification_name) ? req.body.classification_name : '';
+    // Obtener datos del formulario de la sesión
+    const formData = (req.session.formData || {});
     
+    // Limpiar datos del formulario después de usarlos
+    if (req.session.formData) {
+      delete req.session.formData;
+    }
+    
+    // Debug logs
+    console.log('=== buildAddClassification ===');
+    console.log('Messages from session:', res.locals.messages);
+    console.log('Form data from session:', formData);
+    
+    // Renderizar la vista con los datos
     res.render('inventory/add-classification', {
       title: 'Add New Classification',
       currentYear: new Date().getFullYear(),
-      classification_name: classificationName,
-      message: req.flash('error') || req.flash('success') || ''
+      formData: formData,
+      messages: res.locals.messages || { error: [], success: [] },
+      csrfToken: req.csrfToken ? req.csrfToken() : ''
     });
+    
   } catch (error) {
     console.error('Error in buildAddClassification:', error);
     next(error);
@@ -103,24 +128,77 @@ async function buildAddClassification(req, res, next) {
 
 // Process add classification form
 async function addClassification(req, res, next) {
+  const classification_name = (req.body.classification_name || '').trim();
+  
   try {
-    const { classification_name } = req.body;
+    console.log('=== addClassification ===');
+    console.log('Datos recibidos:', { classification_name });
     
-    // Basic validation
+    // Validación del lado del servidor
+    const errors = [];
+    
     if (!classification_name) {
-      req.flash('error', 'Classification name is required');
-      return res.redirect('/inv/add-classification');
+      errors.push('Classification name is required');
+    } else if (!/^[a-zA-Z\s]+$/.test(classification_name)) {
+      errors.push('Classification name must contain only letters and spaces');
     }
     
-    // For now, just redirect back with success message
-    // In a real application, you would save this to the database here
-    req.flash('success', 'Classification added successfully!');
-    res.redirect('/inv/');
+    // Si hay errores, redirigir de vuelta al formulario
+    if (errors.length > 0) {
+      console.log('Errores de validación:', errors);
+      
+      // Guardar mensajes de error en la sesión
+      req.session.flash = {
+        error: errors
+      };
+      
+      // Guardar datos del formulario en la sesión
+      req.session.formData = { classification_name };
+      
+      console.log('Setting error flash:', req.session.flash);
+      
+      // Guardar la sesión antes de redirigir
+      return req.session.save(() => {
+        console.log('Session saved, redirecting to /inv/add-classification');
+        res.redirect(303, '/inv/add-classification');
+      });
+    }
+    
+    // Aquí iría la lógica para guardar en la base de datos
+    // await invModel.addClassification(classification_name);
+    
+    // Éxito: redirigir con mensaje de éxito
+    console.log('Clasificación agregada exitosamente');
+    
+    // Guardar mensaje de éxito en la sesión
+    req.session.flash = {
+      success: ['Classification added successfully!']
+    };
+    
+    console.log('Flash message set:', req.session.flash);
+    
+    // Guardar la sesión antes de redirigir
+    return req.session.save(() => {
+      console.log('Session saved, redirecting to /inv/');
+      res.redirect(303, '/inv/');
+    });
     
   } catch (error) {
-    console.error('Error in addClassification:', error);
-    req.flash('error', 'An error occurred while adding the classification');
-    res.redirect('/inv/add-classification');
+    console.error('Error al agregar la clasificación:', error);
+    
+    // En caso de error, redirigir con mensaje de error
+    req.session.flash = {
+      error: ['An error occurred while adding the classification']
+    };
+    req.session.formData = { classification_name };
+    
+    console.log('Error occurred, setting error flash:', req.session.flash);
+    
+    // Guardar la sesión antes de redirigir
+    return req.session.save(() => {
+      console.log('Session saved after error, redirecting to /inv/add-classification');
+      res.redirect(303, '/inv/add-classification');
+    });
   }
 }
 

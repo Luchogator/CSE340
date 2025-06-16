@@ -1,8 +1,18 @@
 <div class="content-container">
     <h1 class="page-title">Vehicle Management</h1>
     
-    <% if (message) { %>
-        <div class="notice">
+    <% if (typeof flash !== 'undefined' && flash.success) { %>
+        <div class="alert alert-success" style="background-color: #d4edda; color: #155724; padding: 15px; margin-bottom: 20px; border: 1px solid #c3e6cb; border-radius: 4px;">
+            <%- flash.success.join('<br>') %>
+        </div>
+    <% } %>
+    <% if (typeof flash !== 'undefined' && flash.error) { %>
+        <div class="alert alert-danger" style="background-color: #f8d7da; color: #721c24; padding: 15px; margin-bottom: 20px; border: 1px solid #f5c6cb; border-radius: 4px;">
+            <%- flash.error.join('<br>') %>
+        </div>
+    <% } %>
+    <% if (message && !flash) { %>
+        <div class="notice" style="background-color: #e2e3e5; color: #383d41; padding: 15px; margin-bottom: 20px; border: 1px solid #d6d8db; border-radius: 4px;">
             <p><%= message %></p>
         </div>
     <% } %>

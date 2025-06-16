@@ -36,23 +36,80 @@ app.use(async (req, res, next) => {
 /* ***********************
  * Middleware
  * ************************/
- app.use(session({
-  store: new (require('connect-pg-simple')(session))({
-    createTableIfMissing: true,
-    pool,
-  }),
-  secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: true,
-  name: 'sessionId',
-}))
+// Configuración de la sesión
+const pgSession = require('connect-pg-simple')(session);
 
-// Express Messages Middleware
-app.use(require('connect-flash')())
-app.use(function(req, res, next){
-  res.locals.messages = require('express-messages')(req, res)
-  next()
-})
+// Asegurarse de que la tabla de sesiones existe
+const sessionStore = new pgSession({
+  pool: pool,
+  tableName: 'session',
+  createTableIfMissing: true
+});
+
+const sessionConfig = {
+  store: sessionStore,
+  secret: process.env.SESSION_SECRET || 'secreto-seguro-para-desarrollo',
+  resave: false,
+  saveUninitialized: false, // Cambiado a false para evitar guardar sesiones vacías
+  name: 'sessionId',
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24, // 1 día
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  }
+};
+
+app.use(session(sessionConfig));
+
+// Middleware de mensajes flash - debe ir después de la configuración de la sesión
+const flash = require('connect-flash');
+app.use(flash());
+
+// Middleware para inicializar res.locals.messages
+app.use((req, res, next) => {
+  res.locals.messages = {
+    error: [],
+    success: []
+  };
+  next();
+});
+
+// Middleware para manejar mensajes flash
+app.use((req, res, next) => {
+  // Asegurarse de que req.session existe
+  if (!req.session) {
+    req.session = {};
+  }
+  
+  // Inicializar mensajes flash si no existen
+  if (!req.session.flash) {
+    req.session.flash = { _: {} };
+  }
+  
+  // Inicializar res.locals.messages si no existe
+  res.locals.messages = res.locals.messages || { error: [], success: [] };
+  
+  // Obtener mensajes de la sesión
+  const flash = req.session.flash;
+  
+  // Pasar mensajes a res.locals
+  if (flash.error) {
+    res.locals.messages.error = Array.isArray(flash.error) ? flash.error : [flash.error];
+    delete flash.error;
+  }
+  
+  if (flash.success) {
+    res.locals.messages.success = Array.isArray(flash.success) ? flash.success : [flash.success];
+    delete flash.success;
+  }
+  
+  // Guardar cambios en la sesión
+  req.session.save(err => {
+    if (err) console.error('Error al guardar la sesión:', err);
+    next();
+  });
+});
 
 // Set currentYear for all views (move this above all routes and error handlers)
 app.use((req, res, next) => {
@@ -149,9 +206,17 @@ app.use(async (err, req, res, next) => {
  *************************/
 const host = process.env.HOST
 
+// Ruta para obtener información de depuración de la sesión
+app.get('/session-info', (req, res) => {
+  res.json({
+    sessionId: req.sessionID,
+    session: req.session
+  });
+});
+
 /* ***********************
  * Log statement to confirm server operation
  *************************/
 app.listen(port, () => {
-    console.log(`Servidor corriendo en http://localhost:${port}`);
+  console.log(`Servidor corriendo en http://localhost:${port}`)
 });
