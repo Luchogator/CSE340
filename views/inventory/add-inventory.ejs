@@ -1,10 +1,12 @@
-<div class="content-container">
-    <h1 class="page-title">Add New Vehicle</h1>
-    
-    <div class="form-container" style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #dee2e6;">
-        <p style="font-weight: bold; margin: 0 0 10px 0; color: #dc3545;">* All fields are required</p>
+<div class="content-container" style="padding: 2rem 1rem;">
+    <div class="form-container">
+        <div class="form-header">
+            <h1 class="form-title">Add New Vehicle</h1>
+            <p class="form-subtitle">Fill in the details below to add a new vehicle to the inventory</p>
+            <p class="required-fields-note">* All fields are required</p>
+        </div>
 
-        <form id="inventoryForm" action="/inv/add-inventory" method="post" class="inventory-form" novalidate>
+        <form id="inventoryForm" action="/inv/add-inventory" method="post" class="inventory-form needs-validation" novalidate>
             <input type="hidden" name="_method" value="POST">
             <% if (typeof csrfToken !== 'undefined') { %>
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -108,9 +110,13 @@
                 <div class="invalid-feedback">Please enter a color</div>
             </div>
             
-            <div class="form-actions d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Add Vehicle</button>
-                <a href="/inv/" class="btn btn-secondary">Cancel</a>
+            <div class="form-actions">
+                <a href="/inv/" class="btn btn-secondary">
+                    <i class="bi bi-x-lg"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-plus-lg"></i> Add Vehicle
+                </button>
             </div>
         </form>
     </div>
