@@ -50,47 +50,97 @@
             <!-- Year -->
             <div class="form-group mb-3">
                 <label for="inv_year" class="form-label">Year:</label>
-                <input type="text" class="form-control" id="inv_year" name="inv_year" 
-                    value="<%= formData && formData.inv_year ? formData.inv_year : '' %>" required
-                    pattern="\d{4}" minlength="4" maxlength="4">
-                <div class="invalid-feedback">Please enter a valid 4-digit year</div>
+                <input type="number" 
+                    class="form-control" 
+                    id="inv_year" 
+                    name="inv_year" 
+                    value="<%= formData && formData.inv_year ? formData.inv_year : '' %>" 
+                    min="1900" 
+                    max="<%= new Date().getFullYear() + 1 %>" 
+                    required>
+                <div class="form-text">Enter the vehicle's manufacturing year</div>
+                <div class="invalid-feedback">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span>Please enter a valid year (1900-<%= new Date().getFullYear() + 1 %>)</span>
+                </div>
             </div>
 
             <!-- Description -->
             <div class="form-group mb-3">
                 <label for="inv_description" class="form-label">Description:</label>
-                <textarea class="form-control" id="inv_description" name="inv_description" rows="3" required><%= formData && formData.inv_description ? formData.inv_description : '' %></textarea>
-                <div class="invalid-feedback">Please enter a description</div>
+                <textarea 
+                    class="form-control" 
+                    id="inv_description" 
+                    name="inv_description" 
+                    rows="4" 
+                    required
+                    ><%= formData && formData.inv_description ? formData.inv_description : '' %></textarea>
+                <div class="form-text">Provide a detailed description of the vehicle</div>
+                <div class="invalid-feedback">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span>Please enter a description</span>
+                </div>
             </div>
 
-            <!-- Image Path -->
+            <!-- Image -->
             <div class="form-group mb-3">
                 <label for="inv_image" class="form-label">Image Path:</label>
-                <input type="text" class="form-control" id="inv_image" name="inv_image" 
-                    value="<%= formData && formData.inv_image ? formData.inv_image : '/images/vehicles/no-image.jpg' %>" required>
-                <div class="form-text">Enter the path to the vehicle image</div>
-                <div class="invalid-feedback">Please enter a valid image path</div>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    id="inv_image" 
+                    name="inv_image" 
+                    value="<%= formData && formData.inv_image ? formData.inv_image : '' %>" 
+                    placeholder="/images/vehicles/no-image.jpg"
+                    required>
+                <div class="form-text">Enter the path to the vehicle image (e.g., /images/vehicles/example.jpg)</div>
+                <div class="invalid-feedback">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span>Please enter a valid image path</span>
+                </div>
             </div>
 
-            <!-- Thumbnail Path -->
+            <!-- Thumbnail -->
             <div class="form-group mb-3">
                 <label for="inv_thumbnail" class="form-label">Thumbnail Path:</label>
-                <input type="text" class="form-control" id="inv_thumbnail" name="inv_thumbnail" 
-                    value="<%= formData && formData.inv_thumbnail ? formData.inv_thumbnail : '/images/vehicles/no-image-tn.jpg' %>" required>
-                <div class="form-text">Enter the path to the vehicle thumbnail</div>
-                <div class="invalid-feedback">Please enter a valid thumbnail path</div>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    id="inv_thumbnail" 
+                    name="inv_thumbnail" 
+                    value="<%= formData && formData.inv_thumbnail ? formData.inv_thumbnail : '' %>" 
+                    placeholder="/images/vehicles/no-image-tn.jpg"
+                    required>
+                <div class="form-text">Enter the path to the vehicle thumbnail (e.g., /images/vehicles/example-tn.jpg)</div>
+                <div class="invalid-feedback">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span>Please enter a valid thumbnail path</span>
+                </div>
             </div>
 
             <!-- Price -->
-            <div class="form-group mb-3">
+            <div class="form-group">
                 <label for="inv_price" class="form-label">Price:</label>
-                <div class="input-group">
-                    <span class="input-group-text">$</span>
-                    <input type="number" class="form-control" id="inv_price" name="inv_price" 
-                        value="<%= formData && formData.inv_price ? formData.inv_price : '' %>" 
-                        step="0.01" min="0" required>
+                <div class="price-input-container">
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input 
+                            type="number" 
+                            class="form-control price-input" 
+                            id="inv_price" 
+                            name="inv_price"
+                            value="<%= formData && formData.inv_price ? formData.inv_price : '' %>" 
+                            step="0.01" 
+                            min="0" 
+                            placeholder="0.00"
+                            required
+                        >
+                    </div>
+                    <div class="invalid-feedback">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        <span>Please enter a valid price</span>
+                    </div>
                 </div>
-                <div class="invalid-feedback">Please enter a valid price (numbers only)</div>
             </div>
 
             <!-- Miles -->
@@ -126,29 +176,80 @@
 // Client-side form validation
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('inventoryForm');
+    let isFormSubmitted = false;
     
-    // Real-time validation on input
+    // Función para validar un campo individual
+    function validateField(field) {
+        const isValid = field.checkValidity();
+        const errorElement = field.nextElementSibling;
+        
+        if (isFormSubmitted || field.classList.contains('is-valid') || field.classList.contains('is-invalid')) {
+            if (isValid) {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+                if (errorElement && errorElement.classList.contains('invalid-feedback')) {
+                    errorElement.style.display = 'none';
+                }
+            } else {
+                field.classList.remove('is-valid');
+                field.classList.add('is-invalid');
+                if (errorElement && errorElement.classList.contains('invalid-feedback')) {
+                    errorElement.style.display = 'flex';
+                }
+            }
+        }
+        
+        return isValid;
+    }
+    
+    // Validación en tiempo real solo después de la primera interacción
     const inputs = form.querySelectorAll('input, select, textarea');
     inputs.forEach(input => {
+        // Validar al perder el foco
+        input.addEventListener('blur', function() {
+            if (isFormSubmitted || input.value.trim() !== '') {
+                validateField(input);
+            }
+        });
+        
+        // Validar al cambiar el valor
         input.addEventListener('input', function() {
-            if (input.checkValidity()) {
-                input.classList.remove('is-invalid');
-                input.classList.add('is-valid');
-            } else {
-                input.classList.remove('is-valid');
-                input.classList.add('is-invalid');
+            if (isFormSubmitted || input.classList.contains('is-invalid')) {
+                validateField(input);
             }
         });
     });
     
-    // Form submission validation
+    // Validación al enviar el formulario
     form.addEventListener('submit', function(event) {
         if (!form.checkValidity()) {
             event.preventDefault();
             event.stopPropagation();
+            isFormSubmitted = true;
+            
+            // Encontrar el primer campo inválido
+            const firstInvalid = form.querySelector(':invalid');
+            if (firstInvalid) {
+                // Desplazarse al primer campo inválido
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalid.focus({ preventScroll: true });
+                
+                // Validar solo el primer campo inválido
+                validateField(firstInvalid);
+            }
         }
         
         form.classList.add('was-validated');
     }, false);
+    
+    // Validar al cambiar opciones en select
+    const selectElements = form.querySelectorAll('select');
+    selectElements.forEach(select => {
+        select.addEventListener('change', function() {
+            if (isFormSubmitted || select.classList.contains('is-invalid')) {
+                validateField(select);
+            }
+        });
+    });
 });
 </script>
