@@ -89,10 +89,53 @@ async function deleteClassification(classification_id) {
   }
 }
 
+/**
+ * Add a new vehicle to inventory
+ */
+async function addInventory(vehicleData) {
+  try {
+    const sql = `
+      INSERT INTO public.inventory (
+        classification_id, 
+        inv_make, 
+        inv_model, 
+        inv_year, 
+        inv_description, 
+        inv_image, 
+        inv_thumbnail, 
+        inv_price, 
+        inv_miles, 
+        inv_color
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING *
+    `;
+    
+    const values = [
+      vehicleData.classification_id,
+      vehicleData.inv_make,
+      vehicleData.inv_model,
+      vehicleData.inv_year,
+      vehicleData.inv_description,
+      vehicleData.inv_image,
+      vehicleData.inv_thumbnail,
+      vehicleData.inv_price,
+      vehicleData.inv_miles,
+      vehicleData.inv_color
+    ];
+    
+    const result = await pool.query(sql, values);
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error in addInventory:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   getClassifications,
   getInventoryByClassificationId,
   getVehicleById,
   addClassification,
-  deleteClassification
-}
+  deleteClassification,
+  addInventory
+};

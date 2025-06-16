@@ -19,4 +19,9 @@ router.get("/detail/:invId", invController.buildByVehicleId)
 // Route to delete a classification
 router.post("/delete-classification/:id", invController.deleteClassification)
 
+// Route to display add inventory form and handle form submission
+router.route("/add-inventory")
+  .get(invController.buildAddInventory)  // Display form
+  .post(invController.addInventory);    // Handle form submission
+
 module.exports = router

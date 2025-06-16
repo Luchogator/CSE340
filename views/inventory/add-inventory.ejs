@@ -1,0 +1,148 @@
+<div class="content-container">
+    <h1 class="page-title">Add New Vehicle</h1>
+    
+    <div class="form-container" style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #dee2e6;">
+        <p style="font-weight: bold; margin: 0 0 10px 0; color: #dc3545;">* All fields are required</p>
+
+        <form id="inventoryForm" action="/inv/add-inventory" method="post" class="inventory-form" novalidate>
+            <input type="hidden" name="_method" value="POST">
+            <% if (typeof csrfToken !== 'undefined') { %>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <% } %>
+            
+            <!-- Classification -->
+            <div class="form-group mb-3">
+                <label for="classification_id" class="form-label">Classification:</label>
+                <select class="form-select" id="classification_id" name="classification_id" required>
+                    <option value="">Select a classification</option>
+                    <% if (classifications && classifications.length > 0) { %>
+                        <% classifications.forEach(classification => { %>
+                            <option value="<%= classification.classification_id %>"
+                                <%= (formData && formData.classification_id == classification.classification_id) ? 'selected' : '' %>>
+                                <%= classification.classification_name %>
+                            </option>
+                        <% }); %>
+                    <% } %>
+                </select>
+                <div class="invalid-feedback">Please select a classification</div>
+            </div>
+
+            <!-- Make -->
+            <div class="form-group mb-3">
+                <label for="inv_make" class="form-label">Make:</label>
+                <input type="text" class="form-control" id="inv_make" name="inv_make" 
+                    value="<%= formData && formData.inv_make ? formData.inv_make : '' %>" required
+                    pattern="[A-Za-z0-9\s]{1,}">
+                <div class="invalid-feedback">Please enter a valid make (letters and numbers only)</div>
+            </div>
+
+            <!-- Model -->
+            <div class="form-group mb-3">
+                <label for="inv_model" class="form-label">Model:</label>
+                <input type="text" class="form-control" id="inv_model" name="inv_model" 
+                    value="<%= formData && formData.inv_model ? formData.inv_model : '' %>" required
+                    pattern="[A-Za-z0-9\s]{1,}">
+                <div class="invalid-feedback">Please enter a valid model (letters and numbers only)</div>
+            </div>
+
+            <!-- Year -->
+            <div class="form-group mb-3">
+                <label for="inv_year" class="form-label">Year:</label>
+                <input type="text" class="form-control" id="inv_year" name="inv_year" 
+                    value="<%= formData && formData.inv_year ? formData.inv_year : '' %>" required
+                    pattern="\d{4}" minlength="4" maxlength="4">
+                <div class="invalid-feedback">Please enter a valid 4-digit year</div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group mb-3">
+                <label for="inv_description" class="form-label">Description:</label>
+                <textarea class="form-control" id="inv_description" name="inv_description" rows="3" required><%= formData && formData.inv_description ? formData.inv_description : '' %></textarea>
+                <div class="invalid-feedback">Please enter a description</div>
+            </div>
+
+            <!-- Image Path -->
+            <div class="form-group mb-3">
+                <label for="inv_image" class="form-label">Image Path:</label>
+                <input type="text" class="form-control" id="inv_image" name="inv_image" 
+                    value="<%= formData && formData.inv_image ? formData.inv_image : '/images/vehicles/no-image.jpg' %>" required>
+                <div class="form-text">Enter the path to the vehicle image</div>
+                <div class="invalid-feedback">Please enter a valid image path</div>
+            </div>
+
+            <!-- Thumbnail Path -->
+            <div class="form-group mb-3">
+                <label for="inv_thumbnail" class="form-label">Thumbnail Path:</label>
+                <input type="text" class="form-control" id="inv_thumbnail" name="inv_thumbnail" 
+                    value="<%= formData && formData.inv_thumbnail ? formData.inv_thumbnail : '/images/vehicles/no-image-tn.jpg' %>" required>
+                <div class="form-text">Enter the path to the vehicle thumbnail</div>
+                <div class="invalid-feedback">Please enter a valid thumbnail path</div>
+            </div>
+
+            <!-- Price -->
+            <div class="form-group mb-3">
+                <label for="inv_price" class="form-label">Price:</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" class="form-control" id="inv_price" name="inv_price" 
+                        value="<%= formData && formData.inv_price ? formData.inv_price : '' %>" 
+                        step="0.01" min="0" required>
+                </div>
+                <div class="invalid-feedback">Please enter a valid price (numbers only)</div>
+            </div>
+
+            <!-- Miles -->
+            <div class="form-group mb-3">
+                <label for="inv_miles" class="form-label">Miles:</label>
+                <input type="number" class="form-control" id="inv_miles" name="inv_miles" 
+                    value="<%= formData && formData.inv_miles ? formData.inv_miles : '' %>" 
+                    min="0" required>
+                <div class="invalid-feedback">Please enter a valid mileage (numbers only)</div>
+            </div>
+
+            <!-- Color -->
+            <div class="form-group mb-4">
+                <label for="inv_color" class="form-label">Color:</label>
+                <input type="text" class="form-control" id="inv_color" name="inv_color" 
+                    value="<%= formData && formData.inv_color ? formData.inv_color : '' %>" required>
+                <div class="invalid-feedback">Please enter a color</div>
+            </div>
+            
+            <div class="form-actions d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Add Vehicle</button>
+                <a href="/inv/" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Client-side form validation
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('inventoryForm');
+    
+    // Real-time validation on input
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            if (input.checkValidity()) {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+            } else {
+                input.classList.remove('is-valid');
+                input.classList.add('is-invalid');
+            }
+        });
+    });
+    
+    // Form submission validation
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
+        form.classList.add('was-validated');
+    }, false);
+});
+</script>

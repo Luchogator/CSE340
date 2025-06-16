@@ -1,4 +1,5 @@
 const invModel = require("../models/inventory-model")
+const utilities = require("../utilities/index")
 
 // Render inventory by classification id
 async function buildByClassificationId(req, res, next) {
@@ -218,11 +219,103 @@ async function deleteClassification(req, res, next) {
   }
 }
 
+/* **************************
+ * Render add inventory form
+ * ************************** */
+async function buildAddInventory(req, res, next) {
+  try {
+    const nav = await utilities.getNav()
+    const classifications = await invModel.getClassifications()
+    
+    res.render("inventory/add-inventory", {
+      title: "Add New Vehicle",
+      nav,
+      classifications: classifications.rows,
+      formData: req.session.formData || {},
+      errors: null,
+    })
+  } catch (error) {
+    console.error('Error in buildAddInventory:', error)
+    next(error)
+  }
+}
+
+/* **************************
+ * Process add inventory form
+ * ************************** */
+async function addInventory(req, res, next) {
+  const {
+    classification_id,
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color
+  } = req.body
+
+  // Server-side validation
+  const errors = []
+  
+  if (!classification_id) errors.push('Classification is required')
+  if (!inv_make || inv_make.trim() === '') errors.push('Make is required')
+  if (!inv_model || inv_model.trim() === '') errors.push('Model is required')
+  if (!inv_year || !/^\d{4}$/.test(inv_year)) errors.push('Valid 4-digit year is required')
+  if (!inv_description || inv_description.trim() === '') errors.push('Description is required')
+  if (!inv_image || inv_image.trim() === '') errors.push('Image path is required')
+  if (!inv_thumbnail || inv_thumbnail.trim() === '') errors.push('Thumbnail path is required')
+  if (!inv_price || isNaN(inv_price) || parseFloat(inv_price) <= 0) errors.push('Valid price is required')
+  if (!inv_miles || isNaN(inv_miles) || parseInt(inv_miles) < 0) errors.push('Valid mileage is required')
+  if (!inv_color || inv_color.trim() === '') errors.push('Color is required')
+
+  if (errors.length > 0) {
+    // Store form data in session to repopulate form
+    req.session.formData = req.body
+    req.flash('error', errors.join(', '))
+    return res.redirect('/inv/add-inventory')
+  }
+
+  try {
+    // Add the vehicle to the database
+    await invModel.addInventory({
+      classification_id: parseInt(classification_id),
+      inv_make: inv_make.trim(),
+      inv_model: inv_model.trim(),
+      inv_year: parseInt(inv_year),
+      inv_description: inv_description.trim(),
+      inv_image: inv_image.trim(),
+      inv_thumbnail: inv_thumbnail.trim(),
+      inv_price: parseFloat(inv_price),
+      inv_miles: parseInt(inv_miles),
+      inv_color: inv_color.trim()
+    })
+
+    // Clear form data from session
+    if (req.session.formData) {
+      delete req.session.formData
+    }
+
+    // Set success message and redirect
+    req.flash('success', 'Vehicle added successfully!')
+    res.redirect('/inv/')
+  } catch (error) {
+    console.error('Error adding inventory:', error)
+    req.session.formData = req.body
+    req.flash('error', 'Failed to add vehicle. Please try again.')
+    res.redirect('/inv/add-inventory')
+  }
+}
+
 module.exports = {
   buildByClassificationId,
   buildByVehicleId,
   buildManagementView,
   buildAddClassification,
   addClassification,
-  deleteClassification
+  deleteClassification,
+  buildAddInventory,
+  addInventory
 }

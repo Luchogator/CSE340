@@ -1,42 +1,73 @@
 <div class="content-container">
-    <h1 class="page-title">Add New Classification</h1>
-    
-    <div class="form-container" style="background-color: #007bff; color: white; padding: 20px; border-radius: 8px; margin-bottom: 2rem;">
-        <p style="font-weight: bold; margin: 0 0 10px 0;">FIELD IS REQUIRED.</p>
-        <p style="font-style: italic; margin: 0 0 20px 0;">NAME MUST CONTAIN ONLY LETTERS (NO SPACES OR NUMBERS).</p>
-
-        <form id="classificationForm" action="/inv/add-classification" method="post" class="classification-form" novalidate>
+    <div class="form-container">
+        <div class="form-header">
+            <h1 class="form-title">Add New Classification</h1>
+            <p class="form-subtitle">Create a new vehicle classification</p>
+        </div>
+        
+        <% if (messages && messages.error) { %>
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <div><%= messages.error %></div>
+            </div>
+        <% } %>
+        
+        <% if (messages && messages.success) { %>
+            <div class="alert alert-success">
+                <i class="bi bi-check-circle-fill"></i>
+                <div><%= messages.success %></div>
+            </div>
+        <% } %>
+        
+        <form id="classificationForm" action="/inv/add-classification" method="post" class="needs-validation" novalidate>
             <input type="hidden" name="_method" value="POST">
             <% if (typeof csrfToken !== 'undefined') { %>
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <% } %>
             
             <div class="form-group">
-                <label for="classification_name" class="form-label" style="color: white; margin-bottom: 8px; display: block;">Classification Name:</label>
-                <input 
-                    type="text" 
-                    id="classification_name" 
-                    name="classification_name" 
-                    class="form-control" 
-                    required
-                    title="Only letters are allowed (no spaces, numbers, or special characters)"
-                    pattern="^[A-Za-z]+$"
-                    <% if (formData && formData.classification_name) { %>
-                        value="<%= formData.classification_name %>"
-                    <% } %>
-                    style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; margin-bottom: 1rem;"
-                >
-                <div class="invalid-feedback" style="color: #f8d7da; margin-top: -10px; margin-bottom: 10px; font-style: italic;">Please enter a classification name (letters only, no spaces, numbers, or special characters)</div>
-                <div id="clientError" class="validation-error" style="display: none; color: #ffcc00; margin-top: 5px; margin-bottom: 10px; font-weight: bold;"></div>
+                <label for="classification_name" class="form-label">
+                    Classification Name <span class="required">*</span>
+                </label>
+                <div class="input-group">
+                    <span class="input-group-icon">
+                        <i class="bi bi-tag-fill"></i>
+                    </span>
+                    <input 
+                        type="text" 
+                        id="classification_name" 
+                        name="classification_name" 
+                        class="form-control"
+                        placeholder="e.g., Sedan, SUV, Truck"
+                        required
+                        title="Only letters are allowed (no spaces, numbers, or special characters)"
+                        pattern="^[A-Za-z]+$"
+                        <% if (formData && formData.classification_name) { %>
+                            value="<%= formData.classification_name %>"
+                        <% } %>
+                    >
+                </div>
+                <div class="form-hint">
+                    <i class="bi bi-info-circle"></i>
+                    Use letters only (A-Z, a-z). No spaces, numbers, or special characters allowed.
+                </div>
+                <div class="invalid-feedback">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span>Please enter a valid classification name (letters only)</span>
+                </div>
+                <div id="clientError" class="client-error">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span id="clientErrorText"></span>
+                </div>
             </div>
             
-            <div class="form-actions" style="display: flex; justify-content: flex-start; gap: 10px;">
-                <button type="submit" class="btn btn-primary" style="background-color: #0056b3; border: none; padding: 10px 20px; color: white; border-radius: 4px; cursor: pointer;">
-                    Add Classification
-                </button>
-                <a href="/inv/" class="btn btn-secondary" style="background-color: #6c757d; border: none; padding: 10px 20px; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">
-                    Cancel
+            <div class="form-actions">
+                <a href="/inv/" class="btn btn-secondary">
+                    <i class="bi bi-x-lg"></i> Cancel
                 </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-plus-lg"></i> Add Classification
+                </button>
             </div>
         </form>
     </div>
