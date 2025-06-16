@@ -3,7 +3,7 @@
     
     <div class="form-container" style="background-color: #007bff; color: white; padding: 20px; border-radius: 8px; margin-bottom: 2rem;">
         <p style="font-weight: bold; margin: 0 0 10px 0;">FIELD IS REQUIRED.</p>
-        <p style="font-style: italic; margin: 0 0 20px 0;">NAME MUST BE ALPHABETIC CHARACTERS ONLY.</p>
+        <p style="font-style: italic; margin: 0 0 20px 0;">NAME MUST CONTAIN ONLY LETTERS (NO SPACES OR NUMBERS).</p>
 
         <form id="classificationForm" action="/inv/add-classification" method="post" class="classification-form" novalidate>
             <input type="hidden" name="_method" value="POST">
@@ -19,14 +19,14 @@
                     name="classification_name" 
                     class="form-control" 
                     required
-                    title="Please fill out this field"
-                    pattern="[A-Za-z\s]+"
+                    title="Only letters are allowed (no spaces, numbers, or special characters)"
+                    pattern="^[A-Za-z]+$"
                     <% if (formData && formData.classification_name) { %>
                         value="<%= formData.classification_name %>"
                     <% } %>
                     style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; margin-bottom: 1rem;"
                 >
-                <div class="invalid-feedback" style="color: #f8d7da; margin-top: -10px; margin-bottom: 10px; font-style: italic;">Please enter a classification name (letters and spaces only)</div>
+                <div class="invalid-feedback" style="color: #f8d7da; margin-top: -10px; margin-bottom: 10px; font-style: italic;">Please enter a classification name (letters only, no spaces, numbers, or special characters)</div>
                 <div id="clientError" class="validation-error" style="display: none; color: #ffcc00; margin-top: 5px; margin-bottom: 10px; font-weight: bold;"></div>
             </div>
             
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     nameInput.addEventListener('focus', function() {
         this.title = this.validity.valueMissing ? 
             'Please enter a classification name' : 
-            'Enter only letters and spaces';
+            'Enter only letters (no numbers or special characters)';
     });
     
     // Form submission validation
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function validateName() {
         const value = nameInput.value.trim();
-        const nameRegex = /^[a-zA-Z\s]+$/;
+        const nameRegex = /^[A-Za-z]+$/; // Only letters, no spaces
         
         // Clear previous validation state
         nameInput.setCustomValidity('');
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         } else if (!nameRegex.test(value)) {
             if (isValidationActive) {
-                showError('⚠️ Only letters and spaces are allowed');
+                showError('⚠️ Only letters are allowed (no spaces, numbers, or special characters)');
                 showServerError(false);
             }
             return false;

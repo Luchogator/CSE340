@@ -130,8 +130,8 @@ async function addClassification(req, res, next) {
     
     if (!classification_name) {
       errors.push('Classification name is required');
-    } else if (!/^[a-zA-Z\s]+$/.test(classification_name)) {
-      errors.push('Classification name must contain only letters and spaces');
+    } else if (!/^[A-Za-z]+$/.test(classification_name)) {
+      errors.push('Classification name must contain only letters (no spaces, numbers, or special characters)');
     }
     
     // Si hay errores, redirigir de vuelta al formulario
