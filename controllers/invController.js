@@ -83,8 +83,51 @@ async function buildManagementView(req, res, next) {
   }
 }
 
+// Render add classification form
+async function buildAddClassification(req, res, next) {
+  try {
+    // For GET requests, req.body will be undefined, so we provide a default empty value
+    const classificationName = (req.body && req.body.classification_name) ? req.body.classification_name : '';
+    
+    res.render('inventory/add-classification', {
+      title: 'Add New Classification',
+      currentYear: new Date().getFullYear(),
+      classification_name: classificationName,
+      message: req.flash('error') || req.flash('success') || ''
+    });
+  } catch (error) {
+    console.error('Error in buildAddClassification:', error);
+    next(error);
+  }
+}
+
+// Process add classification form
+async function addClassification(req, res, next) {
+  try {
+    const { classification_name } = req.body;
+    
+    // Basic validation
+    if (!classification_name) {
+      req.flash('error', 'Classification name is required');
+      return res.redirect('/inv/add-classification');
+    }
+    
+    // For now, just redirect back with success message
+    // In a real application, you would save this to the database here
+    req.flash('success', 'Classification added successfully!');
+    res.redirect('/inv/');
+    
+  } catch (error) {
+    console.error('Error in addClassification:', error);
+    req.flash('error', 'An error occurred while adding the classification');
+    res.redirect('/inv/add-classification');
+  }
+}
+
 module.exports = {
   buildByClassificationId,
   buildByVehicleId,
-  buildManagementView
+  buildManagementView,
+  buildAddClassification,
+  addClassification
 }

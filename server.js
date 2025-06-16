@@ -17,6 +17,9 @@ const pool = require('./database');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// Middleware for parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+
 // Middleware for static files
 app.use(express.static(path.join(__dirname, 'public')));
 

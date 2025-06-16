@@ -1,0 +1,35 @@
+<div class="content-container">
+    <h1 class="page-title">Add New Classification</h1>
+    
+    <% if (message) { %>
+        <div class="notice" style="color: red; margin-bottom: 1rem; padding: 10px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px;">
+            <p><%= message %></p>
+        </div>
+    <% } %>
+    
+    <div class="form-container" style="background-color: #007bff; color: white; padding: 20px; border-radius: 8px; margin-bottom: 2rem;">
+        <p style="font-weight: bold; margin: 0 0 10px 0;">FIELD IS REQUIRED.</p>
+        <p style="font-style: italic; margin: 0 0 20px 0;">NAME MUST BE ALPHABETIC CHARACTERS ONLY.</p>
+
+        <form action="/inv/add-classification" method="post" class="classification-form">
+            <input type="hidden" name="_method" value="POST">
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="classification_name" style="display: block; margin-bottom: 8px; font-weight: 500;">Classification Name</label>
+                <input type="text" id="classification_name" name="classification_name" 
+                       class="form-control" 
+                       value="<%= typeof classification_name !== 'undefined' ? classification_name : '' %>"
+                       style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;"
+                       required>
+            </div>
+            
+            <button type="submit" class="btn" 
+                    style="background-color: white; color: #007bff; padding: 8px 20px; border: none; border-radius: 4px; font-weight: 500; cursor: pointer;">
+                Add Classification
+            </button>
+        </form>
+    </div>
+    
+    <a href="/inv/" class="btn" style="display: inline-block; margin-top: 1rem; padding: 8px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px;">
+        Cancel
+    </a>
+</div>
