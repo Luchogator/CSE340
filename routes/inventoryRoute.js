@@ -1,6 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const invController = require("../controllers/invController")
+const validation = require("../utilities/validation")
 
 // Route for management view
 router.get("/", invController.buildManagementView)
@@ -8,7 +9,14 @@ router.get("/", invController.buildManagementView)
 // Route to display add classification form and handle form submission
 router.route("/add-classification")
   .get(invController.buildAddClassification)  // Display form
-  .post(invController.addClassification);    // Handle form submission
+  .post(
+    // Validar los datos del formulario
+    validation.validateClassification,
+    // Manejar errores de validación
+    validation.handleClassificationErrors,
+    // Si no hay errores, procesar el formulario
+    invController.addClassification
+  )
 
 // Route for inventory by classification id
 router.get("/type/:classificationId", invController.buildByClassificationId)

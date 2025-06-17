@@ -131,36 +131,12 @@ async function buildAddClassification(req, res, next) {
 
 // Process add classification form
 async function addClassification(req, res, next) {
-  const classification_name = (req.body.classification_name || '').trim();
-  
   try {
     console.log('=== addClassification ===');
-    console.log('Datos recibidos:', { classification_name });
+    console.log('Datos recibidos:', req.body);
     
-    // Validación del lado del servidor
-    const errors = [];
-    
-    if (!classification_name) {
-      errors.push('Classification name is required');
-    } else if (!/^[A-Za-z]+$/.test(classification_name)) {
-      errors.push('Classification name must contain only letters (no spaces, numbers, or special characters)');
-    }
-    
-    // Si hay errores, redirigir de vuelta al formulario
-    if (errors.length > 0) {
-      console.log('Errores de validación:', errors);
-      
-      // Usar req.flash para establecer los mensajes de error
-      errors.forEach(error => req.flash('error', error));
-      
-      // Guardar datos del formulario en la sesión
-      req.session.formData = { classification_name };
-      
-      console.log('Error flash set, redirecting to /inv/add-classification');
-      
-      // Redirigir directamente
-      return res.redirect(303, '/inv/add-classification');
-    }
+    // La validación ya se realizó en el middleware, solo necesitamos manejar el éxito
+    const { classification_name } = req.body;
     
     // Guardar en la base de datos
     await invModel.addClassification(classification_name);
@@ -168,12 +144,17 @@ async function addClassification(req, res, next) {
     // Éxito: redirigir con mensaje de éxito
     console.log('Clasificación agregada exitosamente');
     
+    // Limpiar los datos del formulario de la sesión
+    if (req.session.formData) {
+      delete req.session.formData;
+    }
+    
     // Usar req.flash para establecer el mensaje de éxito
     req.flash('success', `Classification "${classification_name}" added successfully!`);
     
     console.log('Flash message set, redirecting to /inv/');
     
-    // Redirigir directamente - connect-flash manejará la sesión
+    // Redirigir a la vista de gestión
     return res.redirect(303, '/inv/');
     
   } catch (error) {
@@ -181,11 +162,15 @@ async function addClassification(req, res, next) {
     
     // Usar req.flash para establecer el mensaje de error
     req.flash('error', 'An error occurred while adding the classification');
-    req.session.formData = { classification_name };
+    
+    // Guardar los datos del formulario en la sesión para mostrarlos de nuevo
+    if (req.body.classification_name) {
+      req.session.formData = { classification_name: req.body.classification_name };
+    }
     
     console.log('Error occurred, redirecting to /inv/add-classification');
     
-    // Redirigir directamente
+    // Redirigir al formulario de nuevo
     return res.redirect(303, '/inv/add-classification');
   }
 }
