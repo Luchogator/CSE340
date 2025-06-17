@@ -25,6 +25,62 @@
         </div>
     </div>
 
+    <!-- Lista de vehículos existentes -->
+    <div class="vehicles-list" style="margin-top: 40px;">
+        <h2 class="mb-4">Current Inventory</h2>
+        <% if (vehicles && vehicles.length > 0) { %>
+            <div class="table-responsive">
+                <table class="vehicles-table">
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <th>Vehículo</th>
+                            <th>Año</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% vehicles.forEach(vehicle => { %>
+                            <tr>
+                                <td>
+                                    <img src="<%= vehicle.inv_thumbnail || '/images/vehicles/no-image-tn.png' %>" 
+                                         alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>" 
+                                         class="vehicle-image">
+                                </td>
+                                <td>
+                                    <div class="fw-semibold"><%= vehicle.inv_make %> <%= vehicle.inv_model %></div>
+                                    <small class="text-muted"><%= vehicle.classification_name %></small>
+                                </td>
+                                <td><%= vehicle.inv_year %></td>
+                                <td class="fw-bold text-primary">$<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %></td>
+                                <td>
+                                    <div class="vehicle-actions">
+                                        <a href="/inv/edit/<%= vehicle.inv_id %>" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </a>
+                                        <form method="POST" action="/inv/delete/<%= vehicle.inv_id %>" 
+                                              onsubmit="return confirm('¿Estás seguro de que deseas eliminar este vehículo? Esta acción no se puede deshacer.');">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                No se encontraron vehículos. Agrega un nuevo vehículo usando el botón de arriba.
+            </div>
+        <% } %>
+    </div>
+
     <!-- Lista de clasificaciones existentes -->
     <% if (classifications && classifications.length > 0) { %>
         <div class="classifications-list" style="margin-top: 30px;">

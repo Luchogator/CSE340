@@ -1,3 +1,96 @@
+/* ===== TABLA DE GESTIÓN ===== */
+.vehicles-table {
+  width: 100%;
+  margin: 2rem 0;
+  border-collapse: separate;
+  border-spacing: 0 1.5rem;
+  font-size: 0.95rem;
+}
+
+.vehicles-table th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  padding: 1rem 1.25rem;
+  text-align: left;
+  border-bottom: 2px solid #e9ecef;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+.vehicles-table td {
+  padding: 1.5rem;
+  vertical-align: middle;
+  background-color: #fff;
+  border-bottom: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+}
+
+.vehicles-table td:first-child {
+  width: 240px; /* Ancho fijo para la columna de imagen */
+  min-width: 240px;
+}
+
+.vehicles-table tbody tr {
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.vehicles-table tbody tr:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.vehicles-table tbody tr:first-child td:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.vehicles-table tbody tr:first-child td:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.vehicle-image {
+  width: 200px;
+  height: auto;
+  max-height: 160px;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  background-color: #f8f9fa;
+  display: block;
+  margin: 0 auto;
+  transition: transform 0.3s ease;
+  padding: 10px;
+}
+
+.vehicle-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.vehicle-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-sm i {
+  font-size: 0.9em;
+}
+
 /* ===== INVENTORY GRID ===== */
 .inventory-grid {
   display: grid;

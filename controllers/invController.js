@@ -1,5 +1,6 @@
 const invModel = require("../models/inventory-model")
 const utilities = require("../utilities/index")
+const pool = require("../database/index")
 
 // Render inventory by classification id
 async function buildByClassificationId(req, res, next) {
@@ -74,12 +75,22 @@ async function buildManagementView(req, res, next) {
     const classificationsResult = await invModel.getClassifications();
     const classifications = classificationsResult.rows;
     
-    // Pasar los mensajes y clasificaciones a la vista
+    // Obtener la lista de vehículos con información de clasificación
+    const vehiclesResult = await pool.query(`
+      SELECT i.*, c.classification_name 
+      FROM public.inventory i
+      LEFT JOIN public.classification c ON i.classification_id = c.classification_id
+      ORDER BY i.inv_make, i.inv_model
+    `);
+    const vehicles = vehiclesResult.rows;
+    
+    // Pasar los mensajes, clasificaciones y vehículos a la vista
     res.render('inventory/management', {
       title: 'Vehicle Management',
       currentYear: new Date().getFullYear(),
       messages: res.locals.messages || { success: [], error: [] },
-      classifications: classifications
+      classifications: classifications,
+      vehicles: vehicles
     });
   } catch (error) {
     console.error('Error en buildManagementView:', error);
