@@ -320,9 +320,76 @@ async function addInventory(req, res, next) {
   }
 }
 
+/* **************************
+ * Delete a vehicle
+ * ************************** */
+async function deleteVehicle(req, res, next) {
+  const inv_id = parseInt(req.params.invId);
+  
+  try {
+    console.log('Attempting to delete vehicle ID:', inv_id);
+    
+    // Check if vehicle exists
+    const vehicleResult = await pool.query(
+      'SELECT * FROM public.inventory WHERE inv_id = $1', 
+      [inv_id]
+    );
+    
+    if (vehicleResult.rows.length === 0) {
+      console.log('Vehicle not found with ID:', inv_id);
+      req.flash('error', 'Vehicle not found');
+      return res.redirect('/inv');
+    }
+    
+    // Delete the vehicle
+    await pool.query('DELETE FROM public.inventory WHERE inv_id = $1', [inv_id]);
+    
+    console.log('Successfully deleted vehicle ID:', inv_id);
+    req.flash('success', 'Vehicle was successfully deleted');
+    res.redirect('/inv');
+    
+  } catch (error) {
+    console.error('Error deleting vehicle:', error);
+    req.flash('error', 'There was an error deleting the vehicle');
+    res.redirect('/inv');
+  }
+}
+
+/* Delete vehicle by ID */
+async function deleteVehicle(req, res, next) {
+  try {
+    const invId = parseInt(req.params.invId);
+    
+    // Verify vehicle exists
+    const vehicle = await pool.query(
+      'SELECT * FROM public.inventory WHERE inv_id = $1',
+      [invId]
+    );
+    
+    if (vehicle.rows.length === 0) {
+      req.flash('error', 'Vehicle not found');
+      return res.redirect('/inv');
+    }
+    
+    // Delete the vehicle
+    await pool.query(
+      'DELETE FROM public.inventory WHERE inv_id = $1',
+      [invId]
+    );
+    
+    req.flash('success', 'Vehicle deleted successfully');
+    res.redirect('/inv');
+  } catch (error) {
+    console.error('Error deleting vehicle:', error);
+    req.flash('error', 'Error deleting vehicle');
+    res.redirect('/inv');
+  }
+}
+
 module.exports = {
   buildByClassificationId,
   buildByVehicleId,
+  deleteVehicle,
   buildManagementView,
   buildAddClassification,
   addClassification,

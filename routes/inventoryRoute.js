@@ -24,4 +24,7 @@ router.route("/add-inventory")
   .get(invController.buildAddInventory)  // Display form
   .post(invController.addInventory);    // Handle form submission
 
+// Route to delete a vehicle
+router.post("/delete/:invId", invController.deleteVehicle)
+
 module.exports = router
