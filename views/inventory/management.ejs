@@ -43,18 +43,18 @@
                     <tbody>
                         <% vehicles.forEach(vehicle => { %>
                             <tr>
-                                <td>
+                                <td data-label="Image">
                                     <img src="<%= vehicle.inv_thumbnail || '/images/vehicles/no-image-tn.png' %>" 
                                          alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>" 
                                          class="vehicle-image">
                                 </td>
-                                <td>
+                                <td data-label="Vehicle">
                                     <div class="fw-semibold"><%= vehicle.inv_make %> <%= vehicle.inv_model %></div>
                                     <small class="text-muted"><%= vehicle.classification_name %></small>
                                 </td>
-                                <td><%= vehicle.inv_year %></td>
-                                <td class="fw-bold text-primary">$<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %></td>
-                                <td>
+                                <td data-label="Year"><%= vehicle.inv_year %></td>
+                                <td data-label="Price" class="fw-bold text-primary">$<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %></td>
+                                <td data-label="Actions">
                                     <div class="vehicle-actions">
                                         <a href="/inv/edit/<%= vehicle.inv_id %>" class="btn btn-primary btn-sm">
                                             <i class="bi bi-pencil"></i> Edit
