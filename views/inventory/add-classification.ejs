@@ -1,3 +1,65 @@
+<style>
+/* Estilos para anular cualquier estilo de validación */
+#classificationForm input[type="text"],
+#classificationForm input[type="text"]:valid,
+#classificationForm input[type="text"]:invalid,
+#classificationForm input[type="text"]:focus,
+#classificationForm .form-control,
+#classificationForm .form-control:valid,
+#classificationForm .form-control:invalid,
+#classificationForm .form-control:focus,
+#classificationForm .form-control.is-valid,
+#classificationForm .form-control.is-invalid,
+#classificationForm .form-control-plain,
+#classificationForm .form-control-plain:valid,
+#classificationForm .form-control-plain:invalid,
+#classificationForm .form-control-plain:focus,
+#classificationForm .form-control-plain.is-valid,
+#classificationForm .form-control-plain.is-invalid,
+#classification_name,
+#classification_name:valid,
+#classification_name:invalid,
+#classification_name:focus,
+#classification_name.is-valid,
+#classification_name.is-invalid {
+    background-image: none !important;
+    background-color: #fff !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    padding: 0.375rem 0.75rem !important;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+}
+
+/* Estilo cuando el campo está enfocado */
+#classificationForm input[type="text"]:focus,
+#classificationForm .form-control:focus,
+#classificationForm .form-control-plain:focus,
+#classification_name:focus {
+    border-color: #80bdff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+    outline: 0 !important;
+}
+
+/* Estilos para los mensajes de error */
+#clientError {
+    display: none;
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+
+#clientError.show {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#clientError i {
+    font-size: 1em;
+}
+</style>
+
 <div class="content-container">
     <div class="form-container">
         <div class="form-header">
@@ -19,7 +81,7 @@
             </div>
         <% } %>
         
-        <form id="classificationForm" action="/inv/add-classification" method="post" class="needs-validation" novalidate>
+        <form id="classificationForm" action="/inv/add-classification" method="post">
             <input type="hidden" name="_method" value="POST">
             <% if (typeof csrfToken !== 'undefined') { %>
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -37,7 +99,7 @@
                         type="text" 
                         id="classification_name" 
                         name="classification_name" 
-                        class="form-control"
+                        class="form-control form-control-plain"
                         placeholder="e.g., Sedan, SUV, Truck"
                         required
                         title="Only letters are allowed (no spaces, numbers, or special characters)"
@@ -51,10 +113,7 @@
                     <i class="bi bi-info-circle"></i>
                     Use letters only (A-Z, a-z). No spaces, numbers, or special characters allowed.
                 </div>
-                <div class="invalid-feedback">
-                    <i class="bi bi-exclamation-circle-fill"></i>
-                    <span>Please enter a valid classification name (letters only)</span>
-                </div>
+
                 <div id="clientError" class="client-error">
                     <i class="bi bi-exclamation-triangle-fill"></i>
                     <span id="clientErrorText"></span>
@@ -74,98 +133,14 @@
 </div>
 
 <script>
-// Client-side form validation
+// Simple client-side validation
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('classificationForm');
     const nameInput = document.getElementById('classification_name');
     const clientErrorDiv = document.getElementById('clientError');
-    const serverErrorDiv = document.querySelector('.invalid-feedback');
-    let lastValidationMessage = '';
-    let isValidationActive = false;
     
-    // Hide server error by default, show only when needed
-    if (serverErrorDiv) {
-        serverErrorDiv.style.display = 'none';
-    }
-    
-    // Real-time validation with debounce
-    let timeoutId;
+    // Clear any existing error messages when user starts typing
     nameInput.addEventListener('input', function() {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(validateName, 300);
-        
-        // Hide server error when user starts typing
-        if (serverErrorDiv) {
-            serverErrorDiv.style.display = 'none';
-        }
-        
-        // Show client error if needed
-        validateName();
-    });
-    
-    // Show required tooltip on focus
-    nameInput.addEventListener('focus', function() {
-        this.title = this.validity.valueMissing ? 
-            'Please enter a classification name' : 
-            'Enter only letters (no numbers or special characters)';
-    });
-    
-    // Form submission validation
-    form.addEventListener('submit', function(event) {
-        isValidationActive = true;
-        if (!validateName()) {
-            event.preventDefault();
-            return false;
-        }
-        return true;
-    });
-    
-    function validateName() {
-        const value = nameInput.value.trim();
-        const nameRegex = /^[A-Za-z]+$/; // Only letters, no spaces
-        
-        // Clear previous validation state
-        nameInput.setCustomValidity('');
-        
-        if (!value) {
-            if (isValidationActive) {
-                showError('⚠️ Classification name is required');
-                showServerError(false);
-            }
-            return false;
-        } else if (!nameRegex.test(value)) {
-            if (isValidationActive) {
-                showError('⚠️ Only letters are allowed (no spaces, numbers, or special characters)');
-                showServerError(false);
-            }
-            return false;
-        } else {
-            clearError();
-            return true;
-        }
-    }
-    
-    function showError(message) {
-        if (message === lastValidationMessage) return;
-        
-        clientErrorDiv.textContent = message;
-        clientErrorDiv.style.display = 'block';
-        lastValidationMessage = message;
-    }
-    
-    function showServerError(show = true) {
-        if (serverErrorDiv) {
-            serverErrorDiv.style.display = show ? 'block' : 'none';
-        }
-    }
-    
-    function clearError() {
         clientErrorDiv.style.display = 'none';
-        lastValidationMessage = '';
-    }
+    });
 });
-
-function validateForm() {
-    return true; // Siempre retorna true para permitir envío
-}
 </script>
