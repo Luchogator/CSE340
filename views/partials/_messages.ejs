@@ -1,35 +1,42 @@
-<div id="flash-messages">
-  <% if (typeof messages !== 'undefined') { %>
-    <% if (messages.success && messages.success.length > 0) { %>
-      <% messages.success.forEach(function(message) { %>
-        <div class="alert alert-success">
-          <div class="message-content">
-            <svg class="icon" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-            </svg>
-            <span><%= message %></span>
-          </div>
-          <button type="button" class="close" onclick="this.parentElement.remove()">
-            &times;
-          </button>
-        </div>
-      <% }); %>
-    <% } %>
-    
-    <% if (messages.error && messages.error.length > 0) { %>
-      <% messages.error.forEach(function(message) { %>
-        <div class="alert alert-error">
-          <div class="message-content">
-            <svg class="icon" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-            </svg>
-            <span><%= message %></span>
-          </div>
-          <button type="button" class="close" onclick="this.parentElement.remove()">
-            &times;
-          </button>
-        </div>
-      <% }); %>
-    <% } %>
+<div id="status-messages">
+  <% if (typeof statusMessage !== 'undefined' && statusMessage) { %>
+    <div class="alert alert-<%= statusMessage.type %>">
+      <div class="message-content">
+        <span><%= statusMessage.text %></span>
+      </div>
+      <button type="button" class="close" onclick="this.parentElement.remove()">
+        &times;
+      </button>
+    </div>
   <% } %>
 </div>
+
+<script>
+  // Cerrar mensajes automáticamente después de 5 segundos
+  document.addEventListener('DOMContentLoaded', function() {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+      setTimeout(() => {
+        alert.style.opacity = '0';
+        setTimeout(() => alert.remove(), 300);
+      }, 5000);
+      
+      // Cerrar al hacer clic
+      const closeBtn = alert.querySelector('.close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          alert.style.opacity = '0';
+          setTimeout(() => alert.remove(), 300);
+        });
+      }
+    });
+    
+    // Limpiar parámetros de la URL después de mostrar el mensaje
+    if (window.location.search.includes('status=')) {
+      const url = new URL(window.location);
+      url.searchParams.delete('status');
+      url.searchParams.delete('message');
+      window.history.replaceState({}, '', url);
+    }
+  });
+</script>

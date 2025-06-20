@@ -92,29 +92,24 @@ app.use((req, res, next) => {
 const flash = require('connect-flash');
 app.use(flash());
 
-// Middleware para manejar mensajes flash
+// Middleware para manejar mensajes de estado desde la URL
 app.use((req, res, next) => {
-  console.log('=== Inicio del middleware de mensajes flash ===');
+  console.log('=== Inicio del middleware de mensajes de estado ===');
   console.log('URL:', req.originalUrl);
   console.log('Método:', req.method);
-  console.log('Session ID:', req.sessionID);
   
-  // Obtener mensajes flash
-  const successMsgs = req.flash('success');
-  const errorMsgs = req.flash('error');
+  // Verificar si hay parámetros de estado en la URL
+  if (req.query.status && req.query.message) {
+    // Crear objeto de mensaje de estado
+    res.locals.statusMessage = {
+      type: req.query.status,
+      text: decodeURIComponent(req.query.message)
+    };
+    
+    console.log('Mensaje de estado detectado:', res.locals.statusMessage);
+  }
   
-  console.log('Mensajes flash (success):', successMsgs);
-  console.log('Mensajes flash (error):', errorMsgs);
-  
-  // Pasar los mensajes a las vistas
-  res.locals.messages = {
-    success: successMsgs,
-    error: errorMsgs
-  };
-  
-  console.log('res.locals.messages:', res.locals.messages);
-  console.log('=== Fin del middleware de mensajes flash ===\n');
-  
+  console.log('=== Fin del middleware de mensajes de estado ===');
   next();
 });
 
