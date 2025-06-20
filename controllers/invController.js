@@ -142,14 +142,14 @@ async function addClassification(req, res, next) {
     
     console.log('Clasificación agregada exitosamente');
     
-    // Redirigir con mensaje de éxito en la URL
-    return res.redirect(303, `/inv/?status=success&message=${encodeURIComponent(`Clasificación "${classification_name}" agregada exitosamente`)}`);
+    // Redirect with success message in URL
+    return res.redirect(303, `/inv/?status=success&message=${encodeURIComponent(`Classification "${classification_name}" added successfully`)}`);
     
   } catch (error) {
-    console.error('Error al agregar la clasificación:', error);
+    console.error('Error adding classification:', error);
     
-    // Redirigir con mensaje de error en la URL
-    return res.redirect(303, `/inv/add-classification?status=error&message=${encodeURIComponent('Error al agregar la clasificación')}`);
+    // Redirect with error message in URL
+    return res.redirect(303, `/inv/add-classification?status=error&message=${encodeURIComponent('Error adding classification')}`);
   }
 }
 
@@ -163,20 +163,20 @@ async function deleteClassification(req, res, next) {
     console.log('Attempting to delete classification ID:', classification_id);
     
     if (!classification_id || isNaN(classification_id)) {
-      return res.redirect(303, '/inv/?status=error&message=ID de clasificación inválido');
+      return res.redirect(303, '/inv/?status=error&message=Invalid classification ID');
     }
     
     const deleted = await invModel.deleteClassification(classification_id);
     
     if (deleted) {
-      return res.redirect(303, '/inv/?status=success&message=Clasificación eliminada exitosamente');
+      return res.redirect(303, '/inv/?status=success&message=Classification deleted successfully');
     } else {
-      return res.redirect(303, '/inv/?status=error&message=No se pudo eliminar la clasificación');
+      return res.redirect(303, '/inv/?status=error&message=Could not delete classification');
     }
     
   } catch (error) {
     console.error('Error deleting classification:', error);
-    return res.redirect(303, '/inv/?status=error&message=Error al eliminar la clasificación');
+    return res.redirect(303, '/inv/?status=error&message=Error deleting classification');
   }
 }
 
@@ -220,10 +220,10 @@ async function addInventory(req, res, next) {
       classification_id 
     } = req.body;
 
-    // Validar que todos los campos requeridos estén presentes
+    // Validate required fields
     if (!inv_make || !inv_model || !inv_year || !inv_description || !inv_image || 
         !inv_thumbnail || !inv_price || !inv_miles || !inv_color || !classification_id) {
-      return res.redirect(`/inv/add-inventory?status=error&message=${encodeURIComponent('Todos los campos son obligatorios')}`);
+      return res.redirect(`/inv/add-inventory?status=error&message=${encodeURIComponent('All fields are required')}`);
     }
 
     // Crear objeto con los datos del vehículo
@@ -244,13 +244,13 @@ async function addInventory(req, res, next) {
     const result = await invModel.addInventory(invData);
 
     if (result && result.rowCount > 0) {
-      return res.redirect(`/inv/?status=success&message=${encodeURIComponent('Vehículo agregado exitosamente')}`);
+      return res.redirect(`/inv/?status=success&message=${encodeURIComponent('Vehicle added successfully')}`);
     } else {
-      return res.redirect(`/inv/add-inventory?status=error&message=${encodeURIComponent('No se pudo agregar el vehículo')}`);
+      return res.redirect(`/inv/add-inventory?status=error&message=${encodeURIComponent('Failed to add vehicle')}`);
     }
   } catch (error) {
-    console.error('Error al agregar vehículo:', error);
-    return res.redirect(`/inv/add-inventory?status=error&message=${encodeURIComponent('Error al procesar la solicitud')}`);
+    console.error('Error adding vehicle:', error);
+    return res.redirect(`/inv/add-inventory?status=error&message=${encodeURIComponent('Error processing request')}`);
   }
 }
 
@@ -264,21 +264,21 @@ async function deleteInventory(req, res, next) {
     console.log('Attempting to delete inventory ID:', inv_id);
     
     if (!inv_id || isNaN(inv_id)) {
-      return res.redirect(303, '/inv/?status=error&message=ID de vehículo inválido');
+      return res.redirect(303, '/inv/?status=error&message=Invalid vehicle ID');
     }
     
-    // Intentar eliminar el vehículo
+    // Try to delete the vehicle
     const deleted = await invModel.deleteInventory(inv_id);
     
     if (deleted) {
-      return res.redirect(303, '/inv/?status=success&message=Vehículo eliminado exitosamente');
+      return res.redirect(303, '/inv/?status=success&message=Vehicle deleted successfully');
     } else {
-      return res.redirect(303, '/inv/?status=error&message=No se pudo eliminar el vehículo');
+      return res.redirect(303, '/inv/?status=error&message=Could not delete vehicle');
     }
     
   } catch (error) {
     console.error('Error deleting vehicle:', error);
-    return res.redirect(303, '/inv/?status=error&message=Error al eliminar el vehículo');
+    return res.redirect(303, '/inv/?status=error&message=Error deleting vehicle');
   }
 }
 
