@@ -154,8 +154,11 @@ async function addClassification(req, res, next) {
     
     console.log('Flash message set, redirecting to /inv/');
     
-    // Redirigir a la vista de gestión
-    return res.redirect(303, '/inv/');
+    // Guardar la sesión antes de redirigir
+    req.session.save(() => {
+      // Redirigir a la vista de gestión
+      return res.redirect(303, '/inv/');
+    });
     
   } catch (error) {
     console.error('Error al agregar la clasificación:', error);
@@ -198,6 +201,12 @@ async function deleteClassification(req, res, next) {
     } else {
       req.flash('error', 'Classification not found or could not be deleted');
     }
+    
+    // Guardar la sesión antes de redirigir
+    req.session.save(() => {
+      res.redirect(303, '/inv/');
+    });
+    return;
     
     res.redirect(303, '/inv/');
     

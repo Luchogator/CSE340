@@ -47,52 +47,47 @@ const pgSession = require('connect-pg-simple')(session);
 const sessionStore = new pgSession({
   pool: pool,
   tableName: 'session',
-  createTableIfMissing: true
+  createTableIfMissing: true,
+  ttl: 24 * 60 * 60 // 1 día en segundos
 });
 
 const sessionConfig = {
   store: sessionStore,
   secret: process.env.SESSION_SECRET || 'secreto-seguro-para-desarrollo',
   resave: false,
-  saveUninitialized: false, // Cambiado a false para evitar guardar sesiones vacías
+  saveUninitialized: false,
   name: 'sessionId',
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24, // 1 día
+    maxAge: 24 * 60 * 60 * 1000, // 1 día en milisegundos
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   }
 };
 
+// Configurar sesión
 app.use(session(sessionConfig));
 
-// Middleware de mensajes flash - debe ir después de la configuración de la sesión
+// Configurar connect-flash
 const flash = require('connect-flash');
 app.use(flash());
 
 // Middleware para manejar mensajes flash
 app.use((req, res, next) => {
-  // Inicializar res.locals.messages
+  // Pasar los mensajes de flash a las vistas
   res.locals.messages = {
-    success: [],
-    error: []
+    success: req.flash('success') || [],
+    error: req.flash('error') || []
   };
   
-  // Obtener mensajes flash
-  const flashMessages = req.flash();
-  
-  // Pasar mensajes a res.locals
-  if (flashMessages.success && flashMessages.success.length > 0) {
-    res.locals.messages.success = Array.isArray(flashMessages.success) ? 
-      flashMessages.success : [flashMessages.success];
+  // Para depuración
+  if (req.flash('success').length > 0 || req.flash('error').length > 0) {
+    console.log('Mensajes flash detectados:', {
+      success: req.flash('success'),
+      error: req.flash('error')
+    });
   }
   
-  if (flashMessages.error && flashMessages.error.length > 0) {
-    res.locals.messages.error = Array.isArray(flashMessages.error) ? 
-      flashMessages.error : [flashMessages.error];
-  }
-  
-  // Pasar a la siguiente función de middleware
   next();
 });
 
