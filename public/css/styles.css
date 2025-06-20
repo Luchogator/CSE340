@@ -2216,71 +2216,72 @@ textarea:focus {
 }
 
 /* ===== MENSAJES FLASH ===== */
-.messages-container {
+#flash-messages {
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 1100;
+  z-index: 9999;
   max-width: 400px;
   width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .alert {
-  padding: 1rem 1.5rem;
-  margin-bottom: 1rem;
-  border: 1px solid transparent;
+  padding: 12px 20px;
   border-radius: 8px;
-  font-size: 0.95rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  line-height: 1.5;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  opacity: 0.95;
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   animation: slideIn 0.3s ease-out;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-.alert:hover {
+.alert .message-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.alert .icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.alert .close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 0 0 15px;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.alert .close:hover {
   opacity: 1;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .alert-success {
   background-color: #d4edda;
-  border-color: #c3e6cb;
   color: #155724;
+  border-left: 4px solid #28a745;
 }
 
-.alert-danger {
+.alert-error {
   background-color: #f8d7da;
-  border-color: #f5c6cb;
   color: #721c24;
-}
-
-.alert-dismissible {
-  padding-right: 3.5rem;
-  position: relative;
-}
-
-.btn-close {
-  position: absolute;
-  top: 50%;
-  right: 1rem;
-  transform: translateY(-50%);
-  padding: 0.5rem;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-  font-size: 1.25rem;
-  line-height: 1;
-  color: inherit;
-}
-
-.btn-close:hover {
-  opacity: 1;
+  border-left: 4px solid #dc3545;
 }
 
 @keyframes slideIn {
@@ -2290,20 +2291,22 @@ textarea:focus {
   }
   to {
     transform: translateX(0);
-    opacity: 0.95;
+    opacity: 1;
   }
 }
 
 /* Asegurar que los mensajes sean visibles en móviles */
 @media (max-width: 768px) {
-  .messages-container {
+  #flash-messages {
     width: calc(100% - 40px);
     left: 20px;
-    right: auto;
+    right: 20px;
+    max-width: none;
   }
   
   .alert {
     width: 100%;
+    margin: 5px 0;
   }
 }
 

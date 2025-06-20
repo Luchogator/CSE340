@@ -43,12 +43,19 @@ app.use(async (req, res, next) => {
 // Configuración de la sesión
 const pgSession = require('connect-pg-simple')(session);
 
+console.log('=== Configuración de Sesión ===');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('SESSION_SECRET:', process.env.SESSION_SECRET ? 'Definido' : 'No definido');
+console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Definido' : 'No definido');
+
 // Asegurarse de que la tabla de sesiones existe
 const sessionStore = new pgSession({
   pool: pool,
   tableName: 'session',
   createTableIfMissing: true,
-  ttl: 24 * 60 * 60 // 1 día en segundos
+  ttl: 24 * 60 * 60, // 1 día en segundos
+  schemaName: 'public',
+  pruneSessionInterval: 60 // Minutos entre limpieza de sesiones vencidas
 });
 
 const sessionConfig = {
@@ -57,16 +64,29 @@ const sessionConfig = {
   resave: false,
   saveUninitialized: false,
   name: 'sessionId',
+  proxy: process.env.NODE_ENV === 'production',
   cookie: {
     maxAge: 24 * 60 * 60 * 1000, // 1 día en milisegundos
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined
   }
 };
 
 // Configurar sesión
 app.use(session(sessionConfig));
+
+// Middleware para depurar la sesión
+app.use((req, res, next) => {
+  console.log('=== Información de Sesión ===');
+  console.log('URL:', req.originalUrl);
+  console.log('Session ID:', req.sessionID);
+  console.log('Session:', req.session);
+  console.log('Cookies:', req.cookies);
+  console.log('=============================');
+  next();
+});
 
 // Configurar connect-flash
 const flash = require('connect-flash');
@@ -74,19 +94,26 @@ app.use(flash());
 
 // Middleware para manejar mensajes flash
 app.use((req, res, next) => {
-  // Pasar los mensajes de flash a las vistas
+  console.log('=== Inicio del middleware de mensajes flash ===');
+  console.log('URL:', req.originalUrl);
+  console.log('Método:', req.method);
+  console.log('Session ID:', req.sessionID);
+  
+  // Obtener mensajes flash
+  const successMsgs = req.flash('success');
+  const errorMsgs = req.flash('error');
+  
+  console.log('Mensajes flash (success):', successMsgs);
+  console.log('Mensajes flash (error):', errorMsgs);
+  
+  // Pasar los mensajes a las vistas
   res.locals.messages = {
-    success: req.flash('success') || [],
-    error: req.flash('error') || []
+    success: successMsgs,
+    error: errorMsgs
   };
   
-  // Para depuración
-  if (req.flash('success').length > 0 || req.flash('error').length > 0) {
-    console.log('Mensajes flash detectados:', {
-      success: req.flash('success'),
-      error: req.flash('error')
-    });
-  }
+  console.log('res.locals.messages:', res.locals.messages);
+  console.log('=== Fin del middleware de mensajes flash ===\n');
   
   next();
 });
@@ -187,10 +214,48 @@ app.use(async (err, req, res, next) => {
 const host = process.env.HOST
 
 // Ruta para obtener información de depuración de la sesión
-app.get('/session-info', (req, res) => {
-  res.json({
+app.get('/debug/session', (req, res) => {
+  const sessionData = {
     sessionId: req.sessionID,
-    session: req.session
+    session: req.session,
+    cookies: req.cookies,
+    signedCookies: req.signedCookies,
+    headers: {
+      'user-agent': req.headers['user-agent'],
+      'cookie': req.headers['cookie']
+    }
+  };
+  
+  // Agregar información de mensajes flash
+  const flashMessages = {
+    success: req.flash('success'),
+    error: req.flash('error'),
+    info: req.flash('info')
+  };
+  
+  // Verificar si hay mensajes flash
+  const hasFlashMessages = Object.values(flashMessages).some(msgs => msgs.length > 0);
+  
+  res.json({
+    environment: process.env.NODE_ENV,
+    session: sessionData,
+    flashMessages: flashMessages,
+    hasFlashMessages: hasFlashMessages,
+    resLocals: {
+      messages: res.locals.messages || {}
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Ruta de prueba para mensajes flash
+app.get('/debug/flash-test', (req, res) => {
+  req.flash('success', '¡Este es un mensaje de éxito de prueba!');
+  req.flash('error', 'Este es un mensaje de error de prueba.');
+  
+  // Guardar la sesión antes de redirigir
+  req.session.save(() => {
+    res.redirect('/');
   });
 });
 
