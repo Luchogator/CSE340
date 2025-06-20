@@ -131,6 +131,22 @@ async function addInventory(vehicleData) {
   }
 }
 
+/**
+ * Delete a vehicle by ID
+ */
+async function deleteInventory(inv_id) {
+  try {
+    const result = await pool.query(
+      "DELETE FROM public.inventory WHERE inv_id = $1 RETURNING *",
+      [inv_id]
+    );
+    return result;
+  } catch (error) {
+    console.error("Error in deleteInventory:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   getClassifications,
   getInventoryByClassificationId,

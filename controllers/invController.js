@@ -240,13 +240,14 @@ async function addInventory(req, res, next) {
       classification_id: parseInt(classification_id)
     };
 
-    // Insertar en la base de datos
-    const result = await invModel.addInventory(invData);
-
-    if (result && result.rowCount > 0) {
+    // Insert into database
+    try {
+      const result = await invModel.addInventory(invData);
+      console.log('Vehicle added successfully:', result);
       return res.redirect(`/inv/?status=success&message=${encodeURIComponent('Vehicle added successfully')}`);
-    } else {
-      return res.redirect(`/inv/add-inventory?status=error&message=${encodeURIComponent('Failed to add vehicle')}`);
+    } catch (error) {
+      console.error('Error adding vehicle:', error);
+      return res.redirect(`/inv/add-inventory?status=error&message=${encodeURIComponent('Failed to add vehicle: ' + error.message)}`);
     }
   } catch (error) {
     console.error('Error adding vehicle:', error);
@@ -267,13 +268,19 @@ async function deleteInventory(req, res, next) {
       return res.redirect(303, '/inv/?status=error&message=Invalid vehicle ID');
     }
     
-    // Try to delete the vehicle
-    const deleted = await invModel.deleteInventory(inv_id);
-    
-    if (deleted) {
-      return res.redirect(303, '/inv/?status=success&message=Vehicle deleted successfully');
-    } else {
-      return res.redirect(303, '/inv/?status=error&message=Could not delete vehicle');
+    try {
+      // Try to delete the vehicle
+      const result = await invModel.deleteInventory(inv_id);
+      console.log('Delete inventory result:', result);
+      
+      if (result && result.rowCount > 0) {
+        return res.redirect(303, '/inv/?status=success&message=Vehicle deleted successfully');
+      } else {
+        return res.redirect(303, '/inv/?status=error&message=Vehicle not found or could not be deleted');
+      }
+    } catch (error) {
+      console.error('Error in deleteInventory controller:', error);
+      return res.redirect(303, `/inv/?status=error&message=Error deleting vehicle: ${encodeURIComponent(error.message)}`);
     }
     
   } catch (error) {
