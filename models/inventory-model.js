@@ -147,11 +147,72 @@ async function deleteInventory(inv_id) {
   }
 }
 
+/**
+ * Update a vehicle by ID
+ */
+async function updateInventory(inv_id, vehicleData) {
+  try {
+    const sql = `
+      UPDATE public.inventory 
+      SET 
+        classification_id = $1, 
+        inv_make = $2, 
+        inv_model = $3, 
+        inv_year = $4, 
+        inv_description = $5, 
+        inv_image = $6, 
+        inv_thumbnail = $7, 
+        inv_price = $8, 
+        inv_miles = $9, 
+        inv_color = $10
+      WHERE inv_id = $11
+      RETURNING *
+    `;
+    
+    const values = [
+      vehicleData.classification_id,
+      vehicleData.inv_make,
+      vehicleData.inv_model,
+      vehicleData.inv_year,
+      vehicleData.inv_description,
+      vehicleData.inv_image,
+      vehicleData.inv_thumbnail,
+      vehicleData.inv_price,
+      vehicleData.inv_miles,
+      vehicleData.inv_color,
+      inv_id
+    ];
+    
+    const result = await pool.query(sql, values);
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error in updateInventory:", error);
+    throw error;
+  }
+}
+
+/**
+ * Update a classification by ID
+ */
+async function updateClassification(classification_id, classification_name) {
+  try {
+    const sql = "UPDATE classification SET classification_name = $1 WHERE classification_id = $2 RETURNING *";
+    const result = await pool.query(sql, [classification_name, classification_id]);
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error in updateClassification:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   getClassifications,
   getInventoryByClassificationId,
   getVehicleById,
   addClassification,
   deleteClassification,
-  addInventory
+  addInventory,
+  deleteInventory,
+  updateInventory,
+  updateClassification
 };

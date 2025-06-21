@@ -24,6 +24,17 @@ router.get("/type/:classificationId", invController.buildByClassificationId)
 // Route for vehicle detail by inv_id
 router.get("/detail/:invId", invController.buildByVehicleId)
 
+// Routes for editing inventory
+router.get("/edit/:invId", invController.buildEditInventory)
+router.post("/update/:invId", invController.updateInventory)
+
+// Routes for editing classification
+router.get("/edit-classification/:id", invController.buildEditClassification)
+router.post("/update-classification/:id",
+  validation.validateClassification,
+  invController.updateClassification
+)
+
 // Route to delete a classification
 router.post("/delete-classification/:id", invController.deleteClassification)
 

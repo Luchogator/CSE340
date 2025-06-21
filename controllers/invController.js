@@ -202,6 +202,111 @@ async function buildAddInventory(req, res, next) {
 }
 
 // **************************
+// Render edit inventory form
+// **************************
+async function buildEditInventory(req, res, next) {
+  try {
+    const invId = parseInt(req.params.invId);
+    const nav = await utilities.getNav();
+    const vehicleResult = await invModel.getVehicleById(invId);
+    if (vehicleResult.rows.length === 0) {
+      req.flash('error', 'Vehicle not found');
+      return res.redirect('/inv');
+    }
+    const classifications = await invModel.getClassifications();
+    res.render('inventory/edit-inventory', {
+      title: `Edit ${vehicleResult.rows[0].inv_make} ${vehicleResult.rows[0].inv_model}`,
+      nav,
+      classifications: classifications.rows,
+      vehicle: vehicleResult.rows[0],
+      errors: null,
+      currentYear: new Date().getFullYear()
+    });
+  } catch (error) {
+    console.error('Error in buildEditInventory:', error);
+    next(error);
+  }
+}
+
+// **************************
+// Process update inventory form
+// **************************
+async function updateInventory(req, res, next) {
+  try {
+    const invId = parseInt(req.params.invId);
+    const {
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_miles,
+      inv_color,
+      classification_id
+    } = req.body;
+
+    const invData = {
+      inv_make: inv_make.trim(),
+      inv_model: inv_model.trim(),
+      inv_year: parseInt(inv_year),
+      inv_description: inv_description.trim(),
+      inv_image: inv_image.trim(),
+      inv_thumbnail: inv_thumbnail.trim(),
+      inv_price: parseFloat(inv_price),
+      inv_miles: parseInt(inv_miles),
+      inv_color: inv_color.trim(),
+      classification_id: parseInt(classification_id)
+    };
+
+    await invModel.updateInventory(invId, invData);
+    return res.redirect(`/inv/?status=success&message=${encodeURIComponent('Vehicle updated successfully')}`);
+  } catch (error) {
+    console.error('Error updating vehicle:', error);
+    return res.redirect(`/inv/edit/${req.params.invId}?status=error&message=${encodeURIComponent('Error updating vehicle')}`);
+  }
+}
+
+// **************************
+// Render edit classification form
+// **************************
+async function buildEditClassification(req, res, next) {
+  try {
+    const classificationId = parseInt(req.params.id);
+    const classificationResult = await invModel.getClassifications();
+    const classification = classificationResult.rows.find(c => c.classification_id === classificationId);
+    if (!classification) {
+      req.flash('error', 'Classification not found');
+      return res.redirect('/inv');
+    }
+    res.render('inventory/edit-classification', {
+      title: `Edit ${classification.classification_name}`,
+      classification,
+      currentYear: new Date().getFullYear()
+    });
+  } catch (error) {
+    console.error('Error in buildEditClassification:', error);
+    next(error);
+  }
+}
+
+// **************************
+// Process update classification form
+// **************************
+async function updateClassification(req, res, next) {
+  try {
+    const classificationId = parseInt(req.params.id);
+    const { classification_name } = req.body;
+    await invModel.updateClassification(classificationId, classification_name.trim());
+    return res.redirect('/inv/?status=success&message=' + encodeURIComponent('Classification updated successfully'));
+  } catch (error) {
+    console.error('Error updating classification:', error);
+    return res.redirect(`/inv/edit-classification/${req.params.id}?status=error&message=${encodeURIComponent('Error updating classification')}`);
+  }
+}
+
+// **************************
 // Process add inventory form
 // ************************** */
 async function addInventory(req, res, next) {
@@ -355,14 +460,100 @@ async function deleteVehicle(req, res, next) {
   }
 }
 
+// Render edit inventory form
+async function buildEditInventory(req, res, next) {
+  try {
+    const invId = parseInt(req.params.invId);
+    const vehicleResult = await pool.query(
+      'SELECT * FROM public.inventory WHERE inv_id = $1', 
+      [invId]
+    );
+    
+    if (vehicleResult.rows.length === 0) {
+      console.log('Vehicle not found with ID:', invId);
+      req.flash('error', 'Vehicle not found');
+      return res.redirect('/inv');
+    }
+    
+    const vehicle = vehicleResult.rows[0];
+    const classificationsResult = await invModel.getClassifications();
+    const classifications = classificationsResult.rows;
+    res.render('inventory/edit-inventory', {
+      title: `Edit ${vehicle.inv_make} ${vehicle.inv_model}`,
+      vehicle,
+      classifications,
+      currentYear: new Date().getFullYear()
+    });
+  } catch (error) {
+    console.error('Error in buildEditInventory:', error);
+    next(error);
+  }
+}
+
+// Process update inventory form
+async function updateInventory(req, res, next) {
+  try {
+    const invId = parseInt(req.params.invId);
+    const { 
+      inv_make, 
+      inv_model, 
+      inv_year, 
+      inv_description, 
+      inv_image, 
+      inv_thumbnail, 
+      inv_price, 
+      inv_miles, 
+      inv_color, 
+      classification_id 
+    } = req.body;
+
+    // Validate required fields
+    if (!inv_make || !inv_model || !inv_year || !inv_description || !inv_image || 
+        !inv_thumbnail || !inv_price || !inv_miles || !inv_color || !classification_id) {
+      return res.redirect(`/inv/edit-inventory/${req.params.invId}?status=error&message=${encodeURIComponent('All fields are required')}`);
+    }
+
+    // Crear objeto con los datos del vehículo
+    const invData = {
+      inv_make: inv_make.trim(),
+      inv_model: inv_model.trim(),
+      inv_year: parseInt(inv_year),
+      inv_description: inv_description.trim(),
+      inv_image: inv_image.trim(),
+      inv_thumbnail: inv_thumbnail.trim(),
+      inv_price: parseFloat(inv_price),
+      inv_miles: parseInt(inv_miles),
+      inv_color: inv_color.trim(),
+      classification_id: parseInt(classification_id)
+    };
+
+    // Update vehicle in database
+    try {
+      const result = await invModel.updateInventory(invId, invData);
+      console.log('Vehicle updated successfully:', result);
+      return res.redirect(`/inv/?status=success&message=${encodeURIComponent('Vehicle updated successfully')}`);
+    } catch (error) {
+      console.error('Error updating vehicle:', error);
+      return res.redirect(`/inv/edit-inventory/${req.params.invId}?status=error&message=${encodeURIComponent('Failed to update vehicle: ' + error.message)}`);
+    }
+  } catch (error) {
+    console.error('Error updating vehicle:', error);
+    return res.redirect(`/inv/edit-inventory/${req.params.invId}?status=error&message=${encodeURIComponent('Error processing request')}`);
+  }
+}
+
 module.exports = {
   buildByClassificationId,
   buildByVehicleId,
-  deleteVehicle,
   buildManagementView,
   buildAddClassification,
   addClassification,
-  deleteClassification,
   buildAddInventory,
-  addInventory
+  addInventory,
+  deleteVehicle,
+  deleteClassification,
+  buildEditInventory,
+  updateInventory,
+  buildEditClassification,
+  updateClassification
 }

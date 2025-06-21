@@ -1,0 +1,17 @@
+<div class="content-container" style="padding:2rem 1rem;">
+  <div class="form-container">
+    <div class="form-header">
+      <h1 class="form-title">Edit Classification</h1>
+    </div>
+    <form id="classificationForm" action="/inv/update-classification/<%= classification.classification_id %>" method="post">
+      <div class="form-group mb-3">
+        <label for="classification_name" class="form-label">Classification Name:</label>
+        <input type="text" class="form-control" id="classification_name" name="classification_name" value="<%= classification.classification_name %>" required pattern="^[A-Za-z]+$">
+      </div>
+      <div class="form-actions">
+        <a href="/inv/" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">Update Classification</button>
+      </div>
+    </form>
+  </div>
+</div>
