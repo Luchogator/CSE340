@@ -276,11 +276,15 @@ async function buildEditClassification(req, res, next) {
     const classificationId = parseInt(req.params.id);
     const classificationResult = await invModel.getClassifications();
     const classification = classificationResult.rows.find(c => c.classification_id === classificationId);
+    const nav = await utilities.getNav();
+    const messages = { success: req.flash('success'), error: req.flash('error') };
     if (!classification) {
       req.flash('error', 'Classification not found');
       return res.redirect('/inv');
     }
     res.render('inventory/edit-classification', {
+      nav,
+      messages,
       title: `Edit ${classification.classification_name}`,
       classification,
       currentYear: new Date().getFullYear()
