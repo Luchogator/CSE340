@@ -1,0 +1,88 @@
+<!-- index.ejs -->
+<main class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow">
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2 class="card-title mb-0">Mi Cuenta</h2>
+              <a href="/account/logout" class="btn btn-outline-danger">Cerrar Sesión</a>
+            </div>
+            
+            <% if (message) { %>
+              <div class="alert alert-<%= messageType || 'success' %> alert-dismissible fade show" role="alert">
+                <%= message %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            <% } %>
+  
+            <div class="row">
+              <div class="col-md-4 text-center mb-4 mb-md-0">
+                <div class="mb-3">
+                  <img src="<%= user.account_avatar || '/images/avatars/default-avatar.png' %>" 
+                       class="img-fluid rounded-circle" 
+                       alt="Avatar" 
+                       style="width: 150px; height: 150px; object-fit: cover;">
+                </div>
+                <h4><%= user.account_firstname %> <%= user.account_lastname %></h4>
+                <span class="badge bg-primary"><%= user.account_role %></span>
+              </div>
+  
+              <div class="col-md-8">
+                <div class="card mb-4">
+                  <div class="card-header bg-light">
+                    <h5 class="mb-0">Información Personal</h5>
+                  </div>
+                  <div class="card-body">
+                    <form>
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label class="form-label">Nombre</label>
+                          <input type="text" class="form-control" value="<%= user.account_firstname %>" disabled>
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label">Apellido</label>
+                          <input type="text" class="form-control" value="<%= user.account_lastname %>" disabled>
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" value="<%= user.account_email %>" disabled>
+                      </div>
+                      <div class="text-end">
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                          Editar Perfil
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                          Cambiar Contraseña
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+  
+                <!-- Secciones según el rol -->
+                <% if (user.account_role === 'Admin') { %>
+                  <div class="card mb-3">
+                    <div class="card-header bg-light">
+                      <h5 class="mb-0">Administración</h5>
+                    </div>
+                    <div class="card-body">
+                      <div class="d-grid gap-2">
+                        <a href="/admin/users" class="btn btn-outline-dark">Gestionar Usuarios</a>
+                        <a href="/admin/inventory" class="btn btn-outline-dark">Gestionar Inventario<   /a>
+                      </div>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modales -->
+  <%- include('./_editProfileModal') %>
+  <%- include('./_changePasswordModal') %>

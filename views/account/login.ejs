@@ -1,0 +1,62 @@
+<!-- login.ejs -->
+<main class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+          <div class="card-body p-4">
+            <h2 class="card-title text-center mb-4">Iniciar Sesión</h2>
+            
+            <% if (message) { %>
+              <div class="alert alert-<%= messageType || 'info' %> alert-dismissible fade show" role="alert">
+                <%= message %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            <% } %>
+  
+            <form action="/account/login" method="POST">
+              <div class="mb-3">
+                <label for="account_email" class="form-label">Correo Electrónico</label>
+                <input 
+                  type="email" 
+                  class="form-control <%= errors && errors.some(e => e.param === 'account_email') ? 'is-invalid' : '' %>" 
+                  id="account_email" 
+                  name="account_email" 
+                  value="<%= formData && formData.account_email || '' %>" 
+                  required
+                >
+                <% if (errors && errors.some(e => e.param === 'account_email')) { %>
+                  <div class="invalid-feedback">
+                    <%= errors.find(e => e.param === 'account_email').msg %>
+                  </div>
+                <% } %>
+              </div>
+  
+              <div class="mb-3">
+                <label for="account_password" class="form-label">Contraseña</label>
+                <input 
+                  type="password" 
+                  class="form-control <%= errors && errors.some(e => e.param === 'account_password') ? 'is-invalid' : '' %>" 
+                  id="account_password" 
+                  name="account_password" 
+                  required
+                >
+                <% if (errors && errors.some(e => e.param === 'account_password')) { %>
+                  <div class="invalid-feedback">
+                    <%= errors.find(e => e.param === 'account_password').msg %>
+                  </div>
+                <% } %>
+              </div>
+  
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+              </div>
+  
+              <div class="text-center mt-3">
+                <a href="/account/register" class="text-decoration-none">¿No tienes cuenta? Regístrate</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
