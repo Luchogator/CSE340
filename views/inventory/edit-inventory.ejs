@@ -4,11 +4,12 @@
       <h1 class="form-title">Edit Vehicle</h1>
       <p class="required-fields-note">* All fields are required</p>
     </div>
-    <form id="inventoryForm" action="/inv/update/<%= vehicle.inv_id %>" method="post" class="needs-validation" novalidate>
+    <form id="inventoryForm" action="/inv/update/<%= vehicle.inv_id %>" method="post" class="inventory-form needs-validation" novalidate>
       <!-- Classification -->
       <div class="form-group mb-3">
         <label for="classification_id" class="form-label">Classification:</label>
         <select class="form-select" id="classification_id" name="classification_id" required>
+          <option value="">Select a classification</option>
           <% classifications.forEach(c => { %>
             <option value="<%= c.classification_id %>" <%= vehicle.classification_id === c.classification_id ? 'selected' : '' %>><%= c.classification_name %></option>
           <% }) %>
