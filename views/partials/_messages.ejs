@@ -1,3 +1,8 @@
+<style>
+  .alert-danger, .alert-success, .alert-info, .alert-warning {
+    color:#212529!important; /* dark text */
+  }
+</style>
 <div id="status-messages">
   <% if (typeof statusMessage !== 'undefined' && statusMessage) { %>
     <div class="alert alert-<%= statusMessage.type %>">

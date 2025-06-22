@@ -1,6 +1,6 @@
 // controllers/accountController.js
 const bcrypt = require('bcryptjs');
-const { query } = require('../database');
+const pool = require('../database');
 
 // Mostrar formulario de inicio de sesión
 exports.showLoginForm = (req, res) => {
@@ -26,7 +26,7 @@ exports.login = async (req, res) => {
     }
 
     // Buscar usuario en la base de datos
-    const result = await query(
+    const result = await pool.query(
       'SELECT * FROM account WHERE account_email = $1',
       [account_email]
     );
@@ -40,7 +40,15 @@ exports.login = async (req, res) => {
     const user = result.rows[0];
 
     // Verificar contraseña
-    const isMatch = await bcrypt.compare(account_password, user.account_password);
+    // DEBUG: mostrar hash almacenado y resultado de comparación
+    const comparisonResult = await bcrypt.compare(account_password, user.account_password);
+    console.log('DEBUG login -> email:', account_email,
+                '\ninput password:', account_password,
+                '\nDB hash:', user.account_password,
+                '\ncompare result:', comparisonResult);
+
+    // Usar el resultado para decidir
+    const isMatch = comparisonResult;
     if (!isMatch) {
       req.session.message = 'Correo o contraseña incorrectos';
       req.session.messageType = 'danger';
@@ -91,7 +99,7 @@ exports.register = async (req, res) => {
     }
 
     // Verificar si el correo ya existe
-    const existingUser = await query(
+    const existingUser = await pool.query(
       'SELECT * FROM account WHERE account_email = $1',
       [account_email]
     );
@@ -107,7 +115,7 @@ exports.register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(account_password, salt);
 
     // Crear el usuario
-    const result = await query(
+    const result = await pool.query(
       'INSERT INTO account (account_firstname, account_lastname, account_email, account_password, account_role) VALUES ($1, $2, $3, $4, $5) RETURNING *',
       [account_firstname, account_lastname, account_email, hashedPassword, 'Client']
     );
@@ -163,7 +171,7 @@ exports.updateProfile = async (req, res) => {
     }
 
     // Actualizar el perfil
-    await query(
+    await pool.query(
       'UPDATE account SET account_firstname = $1, account_lastname = $2, account_email = $3 WHERE account_id = $4',
       [account_firstname, account_lastname, account_email, userId]
     );
@@ -205,7 +213,7 @@ exports.changePassword = async (req, res) => {
     }
 
     // Obtener el usuario actual
-    const result = await query(
+    const result = await pool.query(
       'SELECT * FROM account WHERE account_id = $1',
       [userId]
     );
@@ -231,7 +239,7 @@ exports.changePassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(new_password, salt);
 
     // Actualizar la contraseña
-    await query(
+    await pool.query(
       'UPDATE account SET account_password = $1 WHERE account_id = $2',
       [hashedPassword, userId]
     );

@@ -11,6 +11,7 @@ const Util = require('./utilities/index');
 const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
+const accountRoute = require("./routes/accountRoute")
 const session = require('express-session');
 const pool = require('./database');
 
@@ -119,6 +120,19 @@ app.use((req, res, next) => {
   next();
 });
 
+// Middleware para exponer mensajes y usuario a todas las vistas (sin connect-flash)
+app.use((req, res, next) => {
+  res.locals.message = req.session.message;
+  res.locals.messageType = req.session.messageType;
+  res.locals.user = req.session.user || null;
+  // Do NOT delete message here; allow the view to display it.
+  // Messages can be cleared explicitly in a later middleware or after response is sent.
+  // console.log('Keeping flash message for view:', res.locals.message, res.locals.messageType);
+  next();
+});
+
+
+
 
 /* ***********************
  * Routes
@@ -130,6 +144,9 @@ app.get("/", utilities.handleErrors(baseController.buildHome))
 
 // Inventory routes
 app.use("/inv", inventoryRoute)
+
+// Account routes
+app.use("/", accountRoute)
 
 
 

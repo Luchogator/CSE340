@@ -3,27 +3,27 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editProfileModalLabel">Editar Perfil</h5>
+          <h5 class="modal-title" id="editProfileModalLabel">Edit Account</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form action="/account/update" method="POST">
           <div class="modal-body">
             <div class="mb-3">
-              <label for="edit_firstname" class="form-label">Nombre</label>
+              <label for="edit_firstname" class="form-label">First Name</label>
               <input type="text" class="form-control" id="edit_firstname" name="account_firstname" value="<%= user.account_firstname %>" required>
             </div>
             <div class="mb-3">
-              <label for="edit_lastname" class="form-label">Apellido</label>
+              <label for="edit_lastname" class="form-label">Last Name</label>
               <input type="text" class="form-control" id="edit_lastname" name="account_lastname" value="<%= user.account_lastname %>" required>
             </div>
             <div class="mb-3">
-              <label for="edit_email" class="form-label">Correo Electrónico</label>
+              <label for="edit_email" class="form-label">Email Address</label>
               <input type="email" class="form-control" id="edit_email" name="account_email" value="<%= user.account_email %>" required>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Update</button>
           </div>
         </form>
       </div>

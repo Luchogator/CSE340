@@ -1,0 +1,45 @@
+<!-- register.ejs -->
+<main class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow">
+        <div class="card-body p-4">
+          <h2 class="card-title text-center mb-4">Sign-up</h2>
+
+          <% if (message) { %>
+            <div class="alert alert-<%= messageType || 'info' %> alert-dismissible fade show" role="alert">
+              <%= message %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
+
+          <form action="/register" method="POST">
+            <div class="mb-3">
+              <label for="account_firstname" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="account_firstname" name="account_firstname" required>
+            </div>
+            <div class="mb-3">
+              <label for="account_lastname" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="account_lastname" name="account_lastname" required>
+            </div>
+            <div class="mb-3">
+              <label for="account_email" class="form-label">Email Address</label>
+              <input type="email" class="form-control" id="account_email" name="account_email" required>
+            </div>
+            <div class="mb-3">
+              <label for="account_password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="account_password" name="account_password" required>
+              <div class="form-text">Passwords must be at least 12 characters, include 1 capital letter, 1 number and 1 special character.</div>
+            </div>
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">Create Account</button>
+            </div>
+            <div class="text-center mt-3">
+              <a href="/login" class="text-decoration-none">Already have an account? Login</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

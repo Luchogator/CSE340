@@ -1,0 +1,6 @@
+<% if (user) { %>
+  <div class="account-bar" style="position:relative; margin-left:auto;">
+    <span>WELCOME <%= user.account_firstname %></span>
+    <a href="/logout" class="ms-1">LOGOUT</a>
+  </div>
+<% } %>
